@@ -25,7 +25,16 @@ int main(int argc, char *argv[]) {
     {
         // name of the title
         char *name = argv[1];
-        char *author = argv[2];
+        long days;
+        if (argv[2] == NULL)
+        {
+            days = 0;
+        }
+        else
+        {
+            days = strtol(argv[2], NULL, 0);
+        }
+        printf("%ld\n", days);
 
         if (strlen(name) > TITLE_MAX_LENGTH)
         {
@@ -38,6 +47,7 @@ int main(int argc, char *argv[]) {
         char date_string[COMPLETE_DATE_LENGTH];
         time(&t);
         tmp = localtime(&t);
+        tmp->tm_mday += days;
 
         // writing the complete date
         strftime(date_string, sizeof(date_string), "%F %T +0800", tmp);
