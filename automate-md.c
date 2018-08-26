@@ -21,7 +21,7 @@ int main(int argc, char *argv[]) {
         printf("There is no argument inputted.\n");
         return 0;
     }
-    else if (argc == 3)
+    else if (argc >= 2)
     {
         // name of the title
         char *name = argv[1];
@@ -34,7 +34,6 @@ int main(int argc, char *argv[]) {
         {
             days = strtol(argv[2], NULL, 0);
         }
-        printf("%ld\n", days);
 
         if (strlen(name) > TITLE_MAX_LENGTH)
         {
@@ -48,6 +47,7 @@ int main(int argc, char *argv[]) {
         time(&t);
         tmp = localtime(&t);
         tmp->tm_mday += days;
+        mktime(tmp);
 
         // writing the complete date
         strftime(date_string, sizeof(date_string), "%F %T +0800", tmp);
@@ -77,7 +77,7 @@ int main(int argc, char *argv[]) {
         char c;
         do
         {
-            printf("\nEnter an integer to indicate how many categories(only up to 16 categories):\n>>> ");
+            printf("\nEnter an integer to indicate how many categories (only up to 16 categories):\n>>> ");
 
         } while (((scanf("%d%c", &post.categories_length, &c)!=2 || c!='\n') && clean_stdin()) || post.categories_length < 1 || post.categories_length > 16);
 
@@ -88,10 +88,10 @@ int main(int argc, char *argv[]) {
         } while (((scanf("%d%c", &post.tags_length, &c)!=2 || c!='\n') && clean_stdin()) || post.tags_length < 1 || post.tags_length> 16);
 
         // prompting for the categories
-        prompt(post.categories_length, "Category", post.categories);
+        prompt(post.categories_length, "\nCategory", post.categories);
 
         // prompting for the tags
-        prompt(post.tags_length, "Tag", post.tags);
+        prompt(post.tags_length, "\nTag", post.tags);
 
         // creating a file
         printf("Creating the post...\n");
