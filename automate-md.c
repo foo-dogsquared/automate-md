@@ -41,11 +41,16 @@ int main(int argc, char *argv[]) {
             printf("Title is more than 64 characters.\n");
             return 1;
         }
+
+        // getting the name by copying it
         char *name = malloc(sizeof(char) * TITLE_MAX_LENGTH);
         strcpy(name, argv[1]);
 
-        // getting the name by copying it
+        // another one set for the title
         char *title = argv[1];
+
+        /* reason why we have two variables set for the name is because strtok() modifies the given string
+        which will be used for cutting the sentences into words to be put in an array */
 
         time_t t;
         struct tm *tmp;
@@ -99,17 +104,20 @@ int main(int argc, char *argv[]) {
         prompt(post.tags_length, "\nTag", post.tags);
 
         // creating a file
-        printf("Creating the post...\n");
+        printf("Creating the post '%s'...\n", file_name);
         FILE* post_md = fopen(file_name, "w");
         if (!post_md) {
             printf("File creation failed.");
         }
 
-        fprintf(post_md, "---\n");
-        fprintf(post_md, "layout: %s\n", post.layout);
-        fprintf(post_md, "title: \"%s\"\n", post.title);
-        fprintf(post_md, "date: %s\n", post.date);
-        fprintf(post_md, "author: %s\n", post.author);
+        fprintf(post_md, "---\n"
+        "layout: %s\n"
+        "title: \"%s\"\n"
+        "date: %s\n"
+        "author: %s\n", post.layout, post.title, post.date, post.author);
+        // fprintf(post_md, "title: \"%s\"\n", post.title);
+        // fprintf(post_md, "date: %s\n", post.date);
+        // fprintf(post_md, "author: %s\n", post.author);
         if (post.categories_length == 1)
         {
             fprintf(post_md, "categories: %s\n", post.categories[0]);

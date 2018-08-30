@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define INVALID_CHARS " ,-?!<>/\\|:\"*"
+#define INVALID_CHARS " `,-?!$^&<>/\\|:\"*#;"
 #define MAX_WORDS_LENGTH 32
 
 char *slugize_str(char *str)

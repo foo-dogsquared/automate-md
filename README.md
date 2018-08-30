@@ -20,3 +20,15 @@ The program only needs two parameters:
     # To easily create a post that is meant for today, just leave out the second parameter
     ./automate-md "BATMAN"
 ```
+
+If the post creation is successful, you should get an `.md` file with the following format:
+> [PUBLISH DATE]-[SLUGIZED TITLE]
+
+In the examples above, you should get some markdown files with the following file names (assuming I've 
+run the program on 30 Aug, 2018):
+- `2018-09-04-sample-title.md`
+- `2018-08-28-the-dogs-are-in-the-rye.md`
+- `2018-08-30-batman`
+
+The markdown files will be populated with a YAML frontmatter that is mostly made for Jekyll (IDK for 
+other SSGs, though), so the usability is pretty limited.
