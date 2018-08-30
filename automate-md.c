@@ -4,6 +4,7 @@
 #include <time.h>
 
 #include "frontmatter.h"
+#include "str_c.h"
 
 #define CHAR_NUMBER_DATE 11
 
@@ -24,7 +25,7 @@ int main(int argc, char *argv[]) {
     else if (argc >= 2)
     {
         // name of the title
-        char *name = argv[1];
+
         long days;
         if (argv[2] == NULL)
         {
@@ -35,11 +36,16 @@ int main(int argc, char *argv[]) {
             days = strtol(argv[2], NULL, 0);
         }
 
-        if (strlen(name) > TITLE_MAX_LENGTH)
+        if (strlen(argv[1]) > TITLE_MAX_LENGTH)
         {
             printf("Title is more than 64 characters.\n");
             return 1;
         }
+        char *name = malloc(sizeof(char) * TITLE_MAX_LENGTH);
+        strcpy(name, argv[1]);
+
+        // getting the name by copying it
+        char *title = argv[1];
 
         time_t t;
         struct tm *tmp;
@@ -54,25 +60,24 @@ int main(int argc, char *argv[]) {
 
         // maximum number of characters in our markdown file
         char file_name[CHAR_NUMBER_MAX_FILE];
+        char *slugized_name = slugize_str(name);
 
         printf("Formatted time: %s\n", date_string);
         // writing the file name starting with the date
         strftime(file_name, sizeof(file_name), "%F", tmp);
-        strcat(file_name, name);
+        strcat(file_name, "-");
+        strcat(file_name, slugized_name);
         strcat(file_name, ".md");
 
         frontmatter post;
 
-        post.layout = "layout: post";
+        post.layout = "post";
 
-        strcpy(post.date, "date: ");
-        strcat(post.date, date_string);
+        strcpy(post.date, date_string);
 
-        strcpy(post.title, "title: ");
-        strcat(post.title, name);
+        strcpy(post.title, title);
 
-        strcpy(post.author, "author: ");
-        strcat(post.author, prompt_for_author("Who is the author of the post?"));
+        strcpy(post.author, prompt_for_author("Who is the author of the post?"));
 
         char c;
         do
@@ -101,9 +106,10 @@ int main(int argc, char *argv[]) {
         }
 
         fprintf(post_md, "---\n");
-        fprintf(post_md, "%s\n", post.layout);
-        fprintf(post_md, "%s\n", post.date);
-        fprintf(post_md, "%s\n", post.author);
+        fprintf(post_md, "layout: %s\n", post.layout);
+        fprintf(post_md, "title: \"%s\"\n", post.title);
+        fprintf(post_md, "date: %s\n", post.date);
+        fprintf(post_md, "author: %s\n", post.author);
         if (post.categories_length == 1)
         {
             fprintf(post_md, "categories: %s\n", post.categories[0]);
@@ -128,14 +134,8 @@ int main(int argc, char *argv[]) {
             fprintf(post_md, "tags: [");
             for (int index = 0; index < post.tags_length; index++)
             {
-                if (index == post.tags_length - 1)
-                {
-                    fprintf(post_md, "%s", post.tags[index]);
-                } else {
-                    fprintf(post_md, "%s, ", post.tags[index]);
-                }
+                (index == post.tags_length - 1) ? fprintf(post_md, "%s", post.tags[index]) : fprintf(post_md, "%s, ", post.tags[index]);
             }
-
             fprintf(post_md, "]\n");
         }
 
