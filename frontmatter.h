@@ -14,8 +14,6 @@
 
 /* CREDITS: https://stackoverflow.com/a/3219471 */
 #define ANSI_COLOR_RED              "\x1b[31m"
-#define ANSI_COLOR_YELLOW           "\x1b[33m"
-#define ANSI_COLOR_BLUE             "\x1b[34m"
 #define ANSI_COLOR_CYAN             "\x1b[36m"
 #define ANSI_COLOR_BRIGHT_GREEN     "\x1b[92m"
 #define ANSI_COLOR_BRIGHT_YELLOW    "\x1b[93m"
