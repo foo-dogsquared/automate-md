@@ -10,6 +10,7 @@
 
 #define CHAR_NUMBER_MAX_FILE 89
 
+/* CREDITS: https://stackoverflow.com/a/14099507 */
 int clean_stdin()
 {
     while (getchar()!='\n');
@@ -19,7 +20,7 @@ int clean_stdin()
 int main(int argc, char *argv[]) {
     if (argc == 1)
     {
-        printf("There is no argument inputted.\n");
+        printf(ANSI_COLOR_RED "There is no argument inputted." ANSI_COLOR_RESET "\n");
         return 0;
     }
     else if (argc >= 2)
@@ -38,7 +39,7 @@ int main(int argc, char *argv[]) {
 
         if (strlen(argv[1]) > TITLE_MAX_LENGTH)
         {
-            printf("Title is more than 64 characters.\n");
+            printf(ANSI_COLOR_RED "Title is more than 64 characters." ANSI_COLOR_RESET "\n");
             return 1;
         }
 
@@ -74,8 +75,10 @@ int main(int argc, char *argv[]) {
         strcat(file_name, slugized_name);
         strcat(file_name, ".md");
 
+        // creating the post with the frontmatter variable 
         frontmatter post;
 
+        // filling out the details
         post.layout = "post";
 
         strcpy(post.date, date_string);
@@ -87,37 +90,39 @@ int main(int argc, char *argv[]) {
         char c;
         do
         {
-            printf("\nEnter an integer to indicate how many categories (only up to 16 categories):\n>>> ");
+            printf(ANSI_COLOR_BRIGHT_CYAN "\nEnter an integer to indicate how many categories (only up to 16 categories):\n>>> " ANSI_COLOR_RESET);
 
         } while (((scanf("%d%c", &post.categories_length, &c)!=2 || c!='\n') && clean_stdin()) || post.categories_length < 1 || post.categories_length > 16);
-
-        do
-        {
-            printf("\nEnter an integer to indicate how many tags (only up to 16 tags):\n>>> ");
-
-        } while (((scanf("%d%c", &post.tags_length, &c)!=2 || c!='\n') && clean_stdin()) || post.tags_length < 1 || post.tags_length> 16);
 
         // prompting for the categories
         prompt(post.categories_length, "\nCategory", post.categories);
 
+        do
+        {
+            printf(ANSI_COLOR_BRIGHT_CYAN "\nEnter an integer to indicate how many tags (only up to 16 tags):\n>>> " ANSI_COLOR_RESET);
+
+        } while (((scanf("%d%c", &post.tags_length, &c)!=2 || c!='\n') && clean_stdin()) || post.tags_length < 1 || post.tags_length> 16);
+
         // prompting for the tags
         prompt(post.tags_length, "\nTag", post.tags);
 
-        // creating a file
-        printf("Creating the post '%s'...\n", file_name);
+        // creating the file
+        printf(ANSI_COLOR_CYAN "\nCreating the post '%s'...\n" ANSI_COLOR_RESET, file_name);
         FILE* post_md = fopen(file_name, "w");
         if (!post_md) {
-            printf("File creation failed.");
+            printf(ANSI_COLOR_RED "\nFile creation failed." ANSI_COLOR_RESET);
         }
 
-        fprintf(post_md, "---\n"
-        "layout: %s\n"
-        "title: \"%s\"\n"
-        "date: %s\n"
-        "author: %s\n", post.layout, post.title, post.date, post.author);
-        // fprintf(post_md, "title: \"%s\"\n", post.title);
-        // fprintf(post_md, "date: %s\n", post.date);
-        // fprintf(post_md, "author: %s\n", post.author);
+        fprintf(
+        post_md, 
+        "---\n"
+        "layout: %s\n" /* first string placeholder */
+        "title: \"%s\"\n" /* second string placeholder */
+        "date: %s\n" /* third string placeholder */
+        "author: %s\n" /* fourth string placeholder */, 
+        post.layout, post.title, post.date, post.author
+        );
+        
         if (post.categories_length == 1)
         {
             fprintf(post_md, "categories: %s\n", post.categories[0]);
@@ -150,7 +155,7 @@ int main(int argc, char *argv[]) {
 
         fprintf(post_md, "---");
 
-        printf("File successfully created!\n");
+        printf(ANSI_COLOR_BRIGHT_GREEN "\nPost successfully created!\n" ANSI_COLOR_RESET);
 
         fclose(post_md);
         return 0;
