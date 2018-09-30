@@ -8,9 +8,7 @@
 #define AUTHOR_NAME_MAX_LENGTH 64
 
 #define CT_ARR_LENGTH 16
-#define CT_NAME_MAX_LENGTH 16
-
-#define INVALID_CHARACTERS
+#define CT_NAME_MAX_LENGTH 32
 
 /* CREDITS: https://stackoverflow.com/a/3219471 */
 #define ANSI_COLOR_RED              "\x1b[31m"
@@ -40,12 +38,12 @@ void prompt(int length, char type[], char string_arr[CT_ARR_LENGTH][CT_NAME_MAX_
         {
             fprintf(stdout, ANSI_COLOR_BRIGHT_YELLOW "\t%s #%i: " ANSI_COLOR_RESET, type, index + 1);
             scanf("%s", input);
-            if (strlen(input) > CT_ARR_LENGTH || strlen(input) < 1) {
-                printf("Must be from 1 to 16 characters only.\n\n");
+            if (strlen(input) > CT_NAME_MAX_LENGTH || strlen(input) < 1) {
+                printf("Must be from 1 to 32 characters only.\n\n");
             } else {
                 strcpy(string_arr[index], input);
             }
-        } while (strlen(input) > 16 || strlen(input) < 1);
+        } while (strlen(input) > CT_NAME_MAX_LENGTH || strlen(input) < 1);
         free(input);
     }
 }
