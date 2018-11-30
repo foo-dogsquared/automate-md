@@ -147,26 +147,38 @@ std::string encloseQuote_arr(std::string* __arr, int __arr_length) {
 	return __val;
 }
 
-std::string slugize_str(std::string __str) {
-	std::string _slug;
-	std::vector<std::string> _words;
+std::vector<std::string> split(std::string __str, const std::regex __delimiters) {
+	const std::vector<std::string> _arr{ 
+		std::sregex_token_iterator(__str.begin(), __str.end(), __delimiters, -1), 
+		std::sregex_token_iterator() 
+	};
+	return  _arr;
+}
 
-	for (char* _token = std::strtok(&__str[0], INVALID_CHARS); _token != NULL; _token = std::strtok(NULL, INVALID_CHARS))
-		_words.push_back(_token);
+std::string slugize_str(std::string __str) {
+	const std::regex __invalid_chars("[^A-Za-z0-9]");
+	std::string _slug;
+	std::vector<std::string> _words = split(__str, __invalid_chars);
+
+	if (_words.empty())
+		return __str;
 	
 	for (int _word_index = 0; _word_index < _words.size(); _word_index++) {
 		for (int _char_index = 0; _words[_word_index][_char_index]; _char_index++)
 			_words[_word_index][_char_index] = tolower(_words[_word_index][_char_index]);
 
-		if (_word_index == 0 && _word_index == _words.size() - 1)
-			_slug = _words[_word_index];
-		else if (_word_index == 0)
-			_slug = _words[_word_index] + "-";
-		else if (_word_index == _words.size() - 1)
+		if (_words[_word_index].empty())
+			continue;
+		else if ((_words.at(_word_index) == _words.front() && _words.size() == 1) || _words.at(_word_index) == _words.back())
 			_slug += _words[_word_index];
+		else if (_words.at(_word_index) == _words.front())
+			_slug += _words[_word_index] + "-";
 		else
 			_slug += _words[_word_index] + "-";
 	}
+
+	if (_slug.back() == '-')
+		_slug.erase(_slug.size() - 1);
 
 	return _slug;
 }
