@@ -146,3 +146,27 @@ std::string encloseQuote_arr(std::string* __arr, int __arr_length) {
 
 	return __val;
 }
+
+std::string slugize_str(std::string __str) {
+	std::string _slug;
+	std::vector<std::string> _words;
+
+	for (char* _token = std::strtok(&__str[0], INVALID_CHARS); _token != NULL; _token = std::strtok(NULL, INVALID_CHARS))
+		_words.push_back(_token);
+	
+	for (int _word_index = 0; _word_index < _words.size(); _word_index++) {
+		for (int _char_index = 0; _words[_word_index][_char_index]; _char_index++)
+			_words[_word_index][_char_index] = tolower(_words[_word_index][_char_index]);
+
+		if (_word_index == 0 && _word_index == _words.size() - 1)
+			_slug = _words[_word_index];
+		else if (_word_index == 0)
+			_slug = _words[_word_index] + "-";
+		else if (_word_index == _words.size() - 1)
+			_slug += _words[_word_index];
+		else
+			_slug += _words[_word_index] + "-";
+	}
+
+	return _slug;
+}

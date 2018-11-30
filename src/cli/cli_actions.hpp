@@ -42,7 +42,7 @@ int create(std::string __title, std::string __publish_date = "0", std::string __
 
 	__file.title = __title;
 	
-    std::string __file_name = output_path + iso_date_string + "-" + __title + ".md";
+    std::string __file_name = output_path + iso_date_string + "-" + slugize_str(__title) + ".md";
 
 	return post_write(__file_name, __file, __fm_type);
 	
