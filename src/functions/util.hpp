@@ -7,6 +7,7 @@
 
 #define MAX_DATE_STRING 64
 #define MAX_STRING_LENGTH 65535
+#define INVALID_CHARS " !@#$%^&*()_+={}[]:;\"'<,>.?/|\\~`"
 
 bool isSame(std::string __word, std::string __compare_str) {
 	if (__word.compare(__compare_str) == 0)
@@ -92,7 +93,7 @@ int prompt_int(std::string __question, int __minimum = 0, int __maximum = INT8_M
 
 		_num = stoi(_out);
 
-		if (_num <= __minimum || _num > __maximum)
+		if (_num < __minimum || _num > __maximum)
 			std::cout << "Value can only range from " << std::to_string(__minimum) << " to " << std::to_string(__maximum) << std::endl;
 	} while (_num < __minimum || _num > __maximum);
 
@@ -122,4 +123,26 @@ std::string isJSON(std::string __word, std::string __type) {
 		return encloseQuote(__word);
 	else
 		return __word;
+}
+
+std::string encloseQuote_arr(std::string* __arr, int __arr_length) {
+	std::string __val;
+
+	if (__arr_length <= 0)
+		return "";
+	else if (__arr_length == 1)
+		return __arr[0];
+	
+	__val = "[";
+
+	for (int index = 0; index < __arr_length; index++) {
+		if (index == __arr_length - 1)
+			__val += encloseQuote(__arr[index]);
+		else
+			__val += encloseQuote(__arr[index]) + ",";
+	}
+
+	__val += "]";
+
+	return __val;
 }

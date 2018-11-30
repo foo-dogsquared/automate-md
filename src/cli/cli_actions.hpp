@@ -2,11 +2,11 @@
 #include <iostream>
 #include <string>
 
-#include "../functions/file_io.h"
-#include "../functions/util.h"
-#include "cli_help.h"
+#include "../functions/file_io.hpp"
+#include "../functions/util.hpp"
+#include "cli_help.hpp"
 
-int create(std::string __title, std::string __publish_date = "0", std::string __output_path = "./") {
+int create(std::string __title, std::string __publish_date = "0", std::string __output_path = "./", std::string __fm_type = "YAML") {
 	frontmatter __file;
 
     if (__title.length() > MAX_TITLE_LENGTH)
@@ -44,6 +44,6 @@ int create(std::string __title, std::string __publish_date = "0", std::string __
 	
     std::string __file_name = output_path + iso_date_string + "-" + __title + ".md";
 
-	return post_write(__file_name, __file);
+	return post_write(__file_name, __file, __fm_type);
 	
 }

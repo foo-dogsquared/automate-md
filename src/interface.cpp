@@ -3,7 +3,7 @@
 #include <string>
 #include <vector>
 
-#include "cli/cli_actions.h"
+#include "cli/cli_actions.hpp"
 
 #define CREATE "create"
 #define UPDATE "update"
@@ -49,6 +49,13 @@ int main(int argc, char* argv[]) {
 
         if (isSame(action, CREATE))
             return create(argv[2], argv[3], argv[4]);
+		else
+			return return_error_code(2, "No available command");
+    }
+    else if (argc == 6) {
+        string action = argv[1];
+        if (isSame(action, CREATE))
+            return create(argv[2], argv[3], argv[4], argv[5]);
 		else
 			return return_error_code(2, "No available command");
     }

@@ -1,4 +1,4 @@
-#include "util.h"
+#include "util.hpp"
 
 typedef struct _frontmatter_type_obj {
 	std::string __open_divider;
