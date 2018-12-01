@@ -25,13 +25,13 @@ int main(int argc, char* argv[]) {
     else if (argc == 3) {
         string action = argv[1];
 
-        if (isSame(action, CREATE))
+        if (action == CREATE)
             return create(argv[2]);
-        else if (isSame(action, UPDATE))
+        else if (action == UPDATE)
             return 0;
-        else if (isSame(action, RESET))
+        else if (action == RESET)
             return 0;
-        else if (isSame(action, EXTRACT))
+        else if (action == EXTRACT)
             return 0;
         else
             return return_error_code(2, "No available command");
@@ -39,7 +39,7 @@ int main(int argc, char* argv[]) {
     else if (argc == 4) {
         string action = argv[1];
 
-        if (isSame(action, CREATE))
+        if (action == CREATE)
             return create(argv[2], argv[3]);
 		else
 			return return_error_code(2, "No available command");
@@ -47,14 +47,14 @@ int main(int argc, char* argv[]) {
     else if (argc == 5) {
         string action = argv[1];
 
-        if (isSame(action, CREATE))
+        if (action == CREATE)
             return create(argv[2], argv[3], argv[4]);
 		else
 			return return_error_code(2, "No available command");
     }
     else if (argc == 6) {
         string action = argv[1];
-        if (isSame(action, CREATE))
+        if (action == CREATE)
             return create(argv[2], argv[3], argv[4], argv[5]);
 		else
 			return return_error_code(2, "No available command");

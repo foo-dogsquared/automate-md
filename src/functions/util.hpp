@@ -9,13 +9,6 @@
 #define MAX_STRING_LENGTH 65535
 #define INVALID_CHARS " !@#$%^&*()_+={}[]:;\"'<,>.?/|\\~`"
 
-bool isSame(std::string __word, std::string __compare_str) {
-	if (__word.compare(__compare_str) == 0)
-		return true;
-	else
-		return false;
-}
-
 bool _begin_isDir(std::string __path)
 {
 	std::regex _begin__dir_regex("^\\.\\.?/.*");
@@ -118,8 +111,17 @@ std::string encloseQuote(std::string __word) {
 	return "\"" + __word + "\"";
 }
 
+std::string removeQuote(std::string __word) {
+	if (__word.front() == '\"' && __word.back() == '\"') {
+		__word.erase(0);
+		__word.erase(__word.size() - 1);
+	}
+
+	return __word;
+}
+
 std::string isJSON(std::string __word, std::string __type) {
-	if (isSame(__type, "JSON") || isSame(__type, "json"))
+	if (__type == "JSON" || __type == "json")
 		return encloseQuote(__word);
 	else
 		return __word;
