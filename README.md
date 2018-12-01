@@ -2,7 +2,18 @@
 A program that just automates creation of .md files that is suitable for Jekyll (and Hugo) with the correct frontmatter, probably.
 
 ## How to use
-For now, to use the program, you would have to build it yourself with `make`, a build system. 
+Clone the Git repo with:
+```
+git clone https://github.com/foo-dogsquared/automate-md.git
+cd automate-md
+```
+
+For now, to use the program, you would have to build it yourself with `cmake` and `make`.
+
+```bash
+cmake CMakeLists.txt
+make
+```
 
 Just for reference, here are the related tools and their version by the time I successfully built the program:
 - CMake 3.6.2
