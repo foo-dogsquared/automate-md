@@ -15,7 +15,9 @@ In the description, make sure to include as much details as possible. Be sure to
 For issuing feature requests or enhancements, prepend with a `[FEATURE]` prefix:
 `[FEATURE] Make post configuration configurable`
 
-Similar to issuing bugs, make sure to include as much discussable details as possible: how this particular enhancement or feature enhance the program overall, how will this make the program easier to use, etc.
+The feature or enhancement request does not have to be about the program itself. It can be also be about the documentation, style guides, anything beneficial for the quality of the project.
+
+Similar to issuing bugs, make sure to include as much discussable details as possible: how this particular enhancement or feature enhance the project overall, how will this make the program easier to use, etc.
 
 ## Code
 If you want to contribute through code, just do the following:
@@ -27,9 +29,10 @@ If you want to contribute through code, just do the following:
 5. Make a pull request into the original repo (this one, of course 😁)
 
 ### About pull requests
-- Make sure to write descriptively what you've generally made
+- Fix only one issue per pull request
+- Describe what you've generally made
 - Write meaningful commit messages (as stated from [the official book](https://git-scm.com/book))
-- You can start with something small like fixing the written code in accordance to the coding style guide (which is just after this one), I even make those mistakes myself 🙃
+- You can start with something small like fixing grammatical errors or editing the source code in accordance to the coding style guide (which is just after this one), I even make those mistakes myself 🙃
 
 ### Coding style
 Well, for consistency. 🙂
