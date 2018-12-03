@@ -14,8 +14,19 @@ Some of the planned changes are also listed in here.
 ### Changed
 - Refactor `std::vector<std::string> split` function
 
+## [0.9.2] - 2018-12-04
+### Added
+- Add the `extract` command (barely working...)
+
+### Changed
+- The structure of the frontmatter
+
 ## [0.9.1] - 2018-12-01
+### Added
 - Add `create` command
+
+### Changed
+- Update the docs
 
 ## [0.9.0] - 2018-11-29
 ### Changed
