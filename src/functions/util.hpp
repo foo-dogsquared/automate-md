@@ -93,16 +93,16 @@ int prompt_int(std::string __question, int __minimum = 0, int __maximum = INT8_M
 	return _num;
 }
 
-std::string* prompt_arr(std::string __question, int __count) {
+std::vector<std::string> prompt_arr(std::string __question, int __count) {
+	std::vector<std::string> _arr;
+
 	if (__count <= 0) {
 		std::cerr << "Given param \"count\" is less than 0" << std::endl;
-		return nullptr;
+		return _arr;
 	}
 
-	std::string *_arr = new std::string[__count];
-	
 	for (int index = 0; index < __count; index++)
-		_arr[index] = prompt(__question + " #" + std::to_string((index + 1)));
+		_arr.push_back(prompt( __question + " #" + std::to_string((index + 1))) );
 
 	return _arr;
 }
@@ -120,14 +120,14 @@ std::string removeQuote(std::string __word) {
 	return __word;
 }
 
-std::string isJSON(std::string __word, std::string __type) {
+std::string is_json(std::string __word, std::string __type) {
 	if (__type == "JSON" || __type == "json")
 		return encloseQuote(__word);
 	else
 		return __word;
 }
 
-std::string encloseQuote_arr(std::string* __arr, int __arr_length) {
+std::string encloseQuote_arr(std::vector<std::string> __arr, int __arr_length) {
 	std::string __val;
 
 	if (__arr_length <= 0)
@@ -183,4 +183,25 @@ std::string slugize_str(std::string __str) {
 		_slug.erase(_slug.size() - 1);
 
 	return _slug;
+}
+
+std::vector<std::string> arr_extract(std::string __arr_str) {
+
+	std::vector<std::string> _arr;
+
+	if (__arr_str.front() != '[' && __arr_str.back() != ']')
+		return _arr;
+
+	std::regex _vector_elem("\".*\"");
+	
+	for (std::sregex_iterator _match = std::sregex_iterator(__arr_str.begin(), __arr_str.end(), _vector_elem); _match != std::sregex_iterator(); ++_match) {
+		std::smatch _word = *_match;
+
+		if (_word.empty())
+			continue;
+
+		_arr.push_back(_word.str()); 
+	}
+	
+	return _arr;
 }

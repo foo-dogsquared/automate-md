@@ -11,9 +11,9 @@ typedef struct _frontmatter
     std::string author;
     std::string title;
     std::string date;
-    std::string *categories;
+    std::vector<std::string> categories;
     int categories_length;
-    std::string *tags;
+    std::vector<std::string> tags;
     int tags_length;
     std::map<std::string, std::string> others;
 } 

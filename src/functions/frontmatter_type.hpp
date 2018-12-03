@@ -3,6 +3,7 @@ typedef struct _frontmatter_type_obj {
 	std::string __close_divider;
 	std::string __tab;
 	std::string __assigner;
+	std::string __type;
 }
 frontmatter_type;
 
@@ -19,7 +20,7 @@ frontmatter_type init(std::string __fm_type) {
 		__f.__open_divider = "+++";
 		__f.__close_divider = "+++";
 		__f.__tab = "";
-		__f.__assigner = "=";
+		__f.__assigner = " =";
 	}
 	else if (__fm_type == "JSON" || __fm_type == "json") {
 		__f.__open_divider = "{";
