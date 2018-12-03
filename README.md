@@ -20,7 +20,7 @@ Just for reference, here are the related tools and their version by the time I s
 - GCC 7.3.0
 
 ### Available commands
-Format: COMMAND "MANDATORY_ARG" [optional_arg1] [optional_arg2] ...
+Format: `COMMAND "MANDATORY_ARG" [optional_arg1] [optional_arg2] ...`
 
 The program has multiple functions available and can be activated with these commands:
 - `create` "TITLE" [RELATIVE_DAYS] [PATH] [FRONTMATTER_TYPE]
@@ -51,3 +51,6 @@ run the program on 30 Aug, 2018):
 
 The markdown files will be populated with a YAML frontmatter that is mostly made for Jekyll (IDK for 
 other SSGs, though), so the usability is pretty limited.
+
+## How to contribute?
+You can refer [here](./CONTRIBUTING.md) for the guidelines.
