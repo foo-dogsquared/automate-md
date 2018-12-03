@@ -45,5 +45,30 @@ int create(std::string __title, std::string __publish_date = "0", std::string __
     std::string __file_name = output_path + iso_date_string + "-" + slugize_str(__title) + ".md";
 
 	return post_write(__file_name, __file, __fm_type);
+}
+
+// TODO: Complete the remaining functions
+// TODO: Complete update()
+int update(std::string __file_path, std::string __updated_title = nullptr, std::string __fm_type = nullptr) {
+	if (__updated_title.empty() && __fm_type.empty())
+		return return_error_code(4, "Command \"update\" needs at least one option parameter.");
 	
+	return post_parse(__file_path);
+}
+
+// TODO: Complete reset()
+int reset(std::string __file_path) {
+	if (__file_path.empty())
+		return return_error_code(5, "Command \"reset\" needs the file path.");
+}
+
+// TODO: Complete extract()
+int extract(std::string __file_path, std::string __part = "frontmatter") {
+	if (__part.empty() || !(__part.compare("frontmatter") || __part.compare("FRONTMATTER")) || !(__part.compare("content") || __part.compare("CONTENT")))
+		return return_error_code(6, "Command \"extract\" needs the file path.");
+
+	if (__part.compare("frontmatter") || __part.compare("FRONTMATTER"))
+		return post_extract(__file_path, __part);
+	
+	return 0;
 }

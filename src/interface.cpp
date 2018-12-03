@@ -32,7 +32,7 @@ int main(int argc, char* argv[]) {
         else if (action == RESET)
             return 0;
         else if (action == EXTRACT)
-            return 0;
+            return post_extract(argv[2]);
         else
             return return_error_code(2, "No available command");
     }
