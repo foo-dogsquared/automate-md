@@ -20,8 +20,7 @@ frontmatter extract_frontmatter(std::string __file_path) {
 	bool _is_opening_tag_parse = false, _is_closing_tag_parse = false;
 
 	std::string _line;
-	std::vector<std::string> _contents;
-	std::regex _val("(" + _fm_type_obj.__tab + ")(.+)(" + _fm_type_obj.__assigner + ")(.+)");
+	std::regex _key_value_regex("^\\s*\"?(\\w+)\"?" + _fm_type_obj.__assigner + "\\s*(.+)");
 	while (!_is_opening_tag_parse || !_is_closing_tag_parse) {
 		getline(_input_file, _line);
 
@@ -35,19 +34,23 @@ frontmatter extract_frontmatter(std::string __file_path) {
 				_is_closing_tag_parse = true;
 		}
 
-
 		std::smatch _matches;
-		if (_is_opening_tag_parse && std::regex_search(_line, _matches, _val)) {
-			if (removeQuote(_matches[2]) == "author")
-				_output.author = _matches[4];
-			else if (removeQuote(_matches[2]) == "layout")
-				_output.layout = _matches[4];
-			else if (removeQuote(_matches[2]) == "title")
-				_output.title = _matches[4];
-			else if (removeQuote(_matches[2]) == "categories")
-				_output.categories = arr_extract(_matches[4]);
-			else if (removeQuote(_matches[2]) == "tags")
-				_output.tags = arr_extract(_matches[4]);
+		if (_is_opening_tag_parse && std::regex_match(_line, _matches, _key_value_regex)) {
+			std::ssub_match _key = _matches[1];
+			std::ssub_match _value = _matches[2];
+			std::cout << _matches[2]  << std::endl;
+			if (removeQuote(_key) == "author")
+				_output.author = _value;
+			else if (removeQuote(_key) == "layout")
+				_output.layout = _value;
+			else if (removeQuote(_key) == "date")
+				_output.date = _value;
+			else if (removeQuote(_key) == "title")
+				_output.title = _value;
+			else if (removeQuote(_key) == "categories")
+				_output.categories = arr_extract(_value);
+			else if (removeQuote(_key) == "tags")
+				_output.tags = arr_extract(_value);
 		}			
 	}
 
@@ -91,7 +94,7 @@ int post_parse(std::string __file_path) {
 int post_extract(std::string __file_path, std::string __part = "frontmatter") {
 	frontmatter _fm = extract_frontmatter(__file_path);
 
-	std::cout << _fm.author << std::endl;
+	std::cout << _fm.categories[0] << std::endl;
 
 	return 0;
 }
