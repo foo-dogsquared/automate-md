@@ -9,10 +9,12 @@
 int create(std::string __title, std::string __publish_date = "0", std::string __output_path = "./", std::string __fm_type = "YAML") {
 	frontmatter __file;
 
-    if (__title.length() > MAX_TITLE_LENGTH)
+    if (__title.length() > MAX_TITLE_LENGTH) {
         return return_error_code(2, "Title exceeds character limit of " + std::to_string(MAX_TITLE_LENGTH) +  " characters.");
+	}
 	
 	int publish_date;
+
 	if (hasNondigits(__publish_date))
 		return return_error_code(3, "@param \"publish_date\" contains invalid characters for conversion.");
 	publish_date = stoi(__publish_date);
@@ -60,6 +62,8 @@ int update(std::string __file_path, std::string __updated_title = nullptr, std::
 int reset(std::string __file_path) {
 	if (__file_path.empty())
 		return return_error_code(5, "Command \"reset\" needs the file path.");
+
+	return 0;
 }
 
 // TODO: Complete extract()
