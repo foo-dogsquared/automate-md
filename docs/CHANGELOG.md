@@ -19,7 +19,8 @@ Some of the planned changes are also listed in here.
 - Add the `extract` command (barely working...)
 
 ### Changed
-- The structure of the frontmatter
+- Change the structure of the frontmatter
+- Revise the regex for most frontmatter formats
 
 ## [0.9.1] - 2018-12-01
 ### Added
