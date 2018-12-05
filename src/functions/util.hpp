@@ -77,7 +77,7 @@ std::string prompt(std::string __question, int __max_size = MAX_STRING_LENGTH)
 int prompt_int(std::string __question, int __minimum = 0, int __maximum = INT8_MAX)
 {
 	std::string _out;
-	int _num;
+	int _num = 0;
 	do {
 		_out = prompt(__question);
 
@@ -120,11 +120,11 @@ std::string removeQuote(std::string __word) {
 	return __word;
 }
 
-std::string is_json(std::string __word, std::string __type) {
+std::string is_json(std::string __type, std::string __affirm_value, std::string __deny_value) {
 	if (__type == "JSON" || __type == "json")
-		return encloseQuote(__word);
+		return __affirm_value;
 	else
-		return __word;
+		return __deny_value;
 }
 
 std::string encloseQuote_arr(std::vector<std::string> __arr, int __arr_length) {
@@ -165,7 +165,7 @@ std::string slugize_str(std::string __str) {
 	if (_words.empty())
 		return __str;
 	
-	for (int _word_index = 0; _word_index < _words.size(); _word_index++) {
+	for (int _word_index = 0; (unsigned int) _word_index < _words.size(); _word_index++) {
 		for (int _char_index = 0; _words[_word_index][_char_index]; _char_index++)
 			_words[_word_index][_char_index] = tolower(_words[_word_index][_char_index]);
 
