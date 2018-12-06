@@ -53,4 +53,4 @@ The markdown files will be populated with a YAML frontmatter that is mostly made
 other SSGs, though), so the usability is pretty limited.
 
 ## How to contribute?
-You can refer [here](./CONTRIBUTING.md) for the guidelines.
+You can refer [here](./docs/CONTRIBUTING.md) for the guidelines.

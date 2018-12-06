@@ -5,21 +5,31 @@ Some of the planned changes are also listed in here.
 - Add `update` command
 - Add `reset` command
 - Add `extract` command
-- Add flags and options such as `--type VALUE`
+- Add flags and options such as `--type VALUE` or `--type=VALUE`
 
 ## [Unreleased]
+- nothing yet
+
+## [0.9.3]
 ## Added
-- Add `extract` command
+- Added `extract` command
+- Assigned an error number range to each command
 
 ### Changed
-- Refactor `std::vector<std::string> split` function
+- Refactored `std::vector<std::string> split` function
+- Changed the frontmatter struct contents entirely into one list
+- `util.hpp` has been modularized
+
+### What are the bugs?
+- Markdown files that are not created with `automate-md` cannot be parsed properly
 
 ## [0.9.2] - 2018-12-04
 ### Added
 - Add the `extract` command (barely working...)
 
 ### Changed
-- The structure of the frontmatter
+- Change the structure of the frontmatter
+- Revise the regex for most frontmatter formats
 
 ## [0.9.1] - 2018-12-01
 ### Added

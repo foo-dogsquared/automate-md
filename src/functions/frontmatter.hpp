@@ -7,14 +7,49 @@
 
 typedef struct _frontmatter
 {
-    std::string layout;
-    std::string author;
-    std::string title;
-    std::string date;
-    std::vector<std::string> categories;
+    std::map<std::string, std::string> list;
     int categories_length;
-    std::vector<std::string> tags;
     int tags_length;
-    std::map<std::string, std::string> others;
+    std::string type;
+    std::string __open_divider;
+	std::string __close_divider;
+	std::string __tab;
+	std::string __assigner;
+	std::string __space;
 } 
 frontmatter;
+
+void init_fm_format_data(frontmatter &__fm) {
+	if (__fm.type == "YAML" || __fm.type == "yaml") {
+		__fm.__open_divider = "---";
+		__fm.__close_divider = "---";
+		__fm.__tab = "";
+		__fm.__assigner = ":";
+		__fm.__space = "";
+	}
+	else if (__fm.type == "TOML" || __fm.type == "toml") {
+		__fm.__open_divider = "+++";
+		__fm.__close_divider = "+++";
+		__fm.__tab = "";
+		__fm.__assigner = "=";
+		__fm.__space = " ";
+	}
+	else if (__fm.type == "JSON" || __fm.type == "json") {
+		__fm.__open_divider = "{";
+		__fm.__close_divider = "}";
+		__fm.__tab = "\t";
+		__fm.__assigner = ":";
+		__fm.__space = "";
+	}
+}
+
+std::string detect_type(std::string __str) {
+	if (__str == "---")
+		return "YAML";
+	else if (__str == "+++")
+		return "TOML";
+	else if (__str == "{" || __str == "}")
+		return "JSON";
+	else
+		return nullptr;
+}
