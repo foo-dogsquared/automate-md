@@ -40,6 +40,13 @@ std::string is_json(std::string __type, std::string __affirm_value, std::string 
 		return __deny_value;
 }
 
+std::string is_yaml(std::string __type, std::string __affirm_value, std::string __deny_value) {
+	if (__type == "YAML" || __type == "yaml")
+		return __affirm_value;
+	else
+		return __deny_value;
+}
+
 std::vector<std::string> split(std::string __str, const std::regex __delimiters) {
 	const std::vector<std::string> _arr{ 
 		std::sregex_token_iterator(__str.begin(), __str.end(), __delimiters, -1), 

@@ -1,7 +1,6 @@
 #pragma once
 
 #include "frontmatter.hpp"
-#include "frontmatter_type.hpp"
 #include "util.hpp"
 
 #include <fstream>
@@ -30,7 +29,6 @@ int open_file_o(std::ofstream &__output_file, std::string __output_path) {
 
 frontmatter extract_frontmatter(std::string __file_path) {
 	frontmatter _output;
-	frontmatter_type _fm_type_obj;
 	std::ifstream _input_file;
 	if (open_file_i(_input_file, __file_path) == FILE_IO_ERROR_NUM)
 		return _output;
@@ -45,9 +43,9 @@ frontmatter extract_frontmatter(std::string __file_path) {
 		getline(_input_file, _line);
 
 		if (_line == "+++" || _line == "---" || _line == "{" || _line == "}") {
-			_fm_type_obj.__type = detect_type(_line);
-			_fm_type_obj = init(_fm_type_obj.__type);
-			_key_value_regex = "^\\s*\"?(\\w+)\"?" + _fm_type_obj.__assigner + "\\s*(.+)";
+			_output.type = detect_type(_line);
+			init_fm_format_data(_output);
+			_key_value_regex = "^\\s*\"?([A-Za-z0-9!@#$%^&*()_+-]+)\"?" + _output.__assigner + "\\s*(.+)";
 
 			if (!_is_opening_tag_parse)
 				_is_opening_tag_parse = true;
@@ -71,23 +69,24 @@ int post_write(std::string __file_path, frontmatter __frontmatter, std::string _
 	std::ofstream __output_file;
 	std::regex _file_ext_md(".+\\.md$");
 
+	init_fm_format_data(__frontmatter);  // defensive mechanism in case the struct frontmatter has no initialized data to get
+
 	if (!std::regex_match(__file_path, _file_ext_md))
 		__file_path += ".md";
 
-	frontmatter_type __f = init(__frontmatter_type);
 	if (open_file_o(__output_file, __file_path) == FILE_IO_ERROR_NUM)
 		return FILE_IO_ERROR_NUM;
 
 	// Writing the frontmatter in the file
-	__output_file << __f.__open_divider << std::endl;
+	__output_file << __frontmatter.__open_divider << std::endl;
 	std::map<std::string, std::string>::iterator _trav = __frontmatter.list.begin();
 
 	while (_trav != __frontmatter.list.end()) {
-		__output_file << __f.__tab << is_json(__frontmatter_type, encloseQuote(_trav->first), _trav->first) << __f.__assigner << " " << is_json(__frontmatter_type, encloseQuote(_trav->second), _trav->second) << is_json(__frontmatter_type, ",", "") << std::endl;
+		__output_file << __frontmatter.__tab << is_json(__frontmatter_type, encloseQuote(_trav->first), _trav->first) << __frontmatter.__assigner << " " << is_yaml(__frontmatter_type, _trav->second, encloseQuote(_trav->second)) << is_json(__frontmatter_type, ",", "") << std::endl;
 		_trav++;
 	}
 
-	__output_file << __f.__close_divider << std::endl;
+	__output_file << __frontmatter.__close_divider << std::endl;
 
 	std::cout << "\n\n" + __file_path + " was successfully created." << std::endl;
 
@@ -102,10 +101,5 @@ int post_parse(std::string __file_path) {
 int post_extract(std::string __file_path, std::string __output_path, std::string __part = "frontmatter") {
 	frontmatter _fm = extract_frontmatter(__file_path);
 
-	std::ofstream _output_file;
-	if (open_file_o(_output_file, __output_path) == FILE_IO_ERROR_NUM)
-		return FILE_IO_ERROR_NUM;
-	
-	_output_file.close();
-	return 0;
+	return post_write(__output_path, _fm, _fm.type);
 }

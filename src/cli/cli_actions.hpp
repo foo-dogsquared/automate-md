@@ -25,6 +25,8 @@ int create(std::string __title, std::string __publish_date = "0", std::string __
 	std::string output_path = check_dir_path(__output_path);
 
 	// Filling up the frontmatter with the necessary data
+	__file.type = __fm_type;
+
 	__file.list.insert(std::make_pair("layout", prompt("What is the post layout in the frontmatter?")));
 	__file.list.insert(std::make_pair("author", prompt("Who is the author in the post?") ) );
 	
