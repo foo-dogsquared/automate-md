@@ -5,14 +5,17 @@ Some of the planned changes are also listed in here.
 - Add `update` command
 - Add `reset` command
 - Add `extract` command
-- Add flags and options such as `--type VALUE`
+- Add flags and options such as `--type VALUE` or `--type=VALUE`
 
 ## [Unreleased]
 ## Added
-- Add `extract` command
+- Added `extract` command
+- Assigned an error number range to each command
 
 ### Changed
-- Refactor `std::vector<std::string> split` function
+- Refactored `std::vector<std::string> split` function
+- Changed the frontmatter struct contents entirely into one list
+- `util.hpp` has been modularized
 
 ## [0.9.2] - 2018-12-04
 ### Added
