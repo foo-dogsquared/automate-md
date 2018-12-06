@@ -18,7 +18,7 @@ typedef struct _frontmatter
 } 
 frontmatter;
 
-void init(frontmatter &__fm) {
+void init_fm_format_data(frontmatter &__fm) {
 	if (__fm.type == "YAML" || __fm.type == "yaml") {
 		__fm.__open_divider = "---";
 		__fm.__close_divider = "---";

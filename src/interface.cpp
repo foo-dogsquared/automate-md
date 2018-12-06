@@ -49,6 +49,8 @@ int main(int argc, char* argv[]) {
 
         if (action == CREATE)
             return create(argv[2], argv[3], argv[4]);
+        else if (action == EXTRACT)
+            return extract(argv[2], argv[3], argv[4]);
 		else
 			return return_error_code(2, "No available command");
     }
