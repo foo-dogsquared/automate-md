@@ -15,6 +15,7 @@ But the main files to be inspected for the core functions to work is from `/cli/
 ### General
 - 1 - this only occurs when opening the program with only an action and has no parameter
 - 2 - given action is not available
+- 3 - file I/O error
 
 ### Command-specific
 #### `create` (10 - 19) 
