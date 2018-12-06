@@ -30,3 +30,4 @@ But the main files to be inspected for the core functions to work is from `/cli/
 
 #### `extract` (40 - 49)
 - 40 - needing a param `@output_path`
+- 41 - content extracted from the file is empty
