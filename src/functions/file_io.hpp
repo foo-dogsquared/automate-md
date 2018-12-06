@@ -9,22 +9,18 @@
 
 #define FILE_IO_ERROR_NUM 3
 
-int open_file_i(std::ifstream &__input_file, std::string __input_path) {
+void open_file_i(std::ifstream &__input_file, std::string __input_path) {
 	__input_file.open(__input_path);
 
 	if (!__input_file.is_open())
-		return return_error_code(3, "Cannot open file at: " + __input_path);
-
-	return 0;
+		exit_error_code(3, "Cannot open file at: " + __input_path);
 }
 
-int open_file_o(std::ofstream &__output_file, std::string __output_path) {
+void open_file_o(std::ofstream &__output_file, std::string __output_path) {
 	__output_file.open(__output_path);
 
 	if (!__output_file.is_open())
-		return return_error_code(3, "Cannot open file at: " + __output_path);
-
-	return 0;
+		exit_error_code(3, "Cannot open file at: " + __output_path);
 }
 
 bool is_frontmatter_tag(std::string __line) {
@@ -46,8 +42,7 @@ bool is_markdown(std::string __file_path) {
 frontmatter extract_frontmatter(std::string __file_path) {
 	frontmatter _output;
 	std::ifstream _input_file;
-	if (open_file_i(_input_file, __file_path) == FILE_IO_ERROR_NUM)
-		return _output;
+	open_file_i(_input_file, __file_path);
 
 	bool _is_opening_tag_parse = false, _is_closing_tag_parse = false;
 
@@ -55,14 +50,12 @@ frontmatter extract_frontmatter(std::string __file_path) {
 	std::regex _key_value_regex;
 	std::smatch _matches;
 	std::ssub_match _key, _value;
-	while (!_is_opening_tag_parse || !_is_closing_tag_parse) {
+	while (!_is_opening_tag_parse || !_is_closing_tag_parse || _input_file.eof()) {
 		getline(_input_file, _line);
-		std::cout << _is_opening_tag_parse << _is_closing_tag_parse << std::endl;
-
 		if (is_frontmatter_tag(_line)) {
 			_output.type = detect_type(_line);
 			init_fm_format_data(_output);
-			_key_value_regex = "^\\s*\"?([A-Za-z0-9!@#$%^&*()_+-]+)\"?" + _output.__assigner + "\\s*(.+)";
+			_key_value_regex = "^\\s*\"?([A-Za-z0-9!@#$%^&*()_+-]+)\"?\\s*" + _output.__assigner + "\\s*(.+)";
 
 			if (!_is_opening_tag_parse && !_is_closing_tag_parse)
 				_is_opening_tag_parse = true;
@@ -85,16 +78,13 @@ frontmatter extract_frontmatter(std::string __file_path) {
 std::string extract_content(std::string __file_path) {
 	std::string _output;
 	std::ifstream _input_file;
-	_input_file.open(__file_path);
-	
-	if (!_input_file.is_open())
-		return "";
-	
-	std::string _line;
+	open_file_i(_input_file, __file_path);
+
 	std::regex _whitespace("\\s+");
 	bool _is_opening_tag_parse = false, _is_closing_tag_parse = false, _content_start = false;
-	while(getline(_input_file, _line)) {
-		if (is_frontmatter_tag(_line) && !_is_opening_tag_parse)
+	for (std::string _line = "a"; std::getline(_input_file, _line);) {
+		std::cout << _line << is_frontmatter_tag(_line) << "---"  << std::endl;
+		if (!_is_opening_tag_parse)
 			_is_opening_tag_parse = true;
 		else if (is_frontmatter_tag(_line) && _is_opening_tag_parse && !_is_closing_tag_parse)
 			_is_closing_tag_parse = true;
@@ -117,15 +107,14 @@ int post_write(std::string __file_path, frontmatter __frontmatter, std::string _
 	if (!is_markdown(__file_path))
 		__file_path += ".md";
 
-	if (open_file_o(__output_file, __file_path) == FILE_IO_ERROR_NUM)
-		return FILE_IO_ERROR_NUM;
+	open_file_o(__output_file, __file_path);
 
 	// Writing the frontmatter in the file
 	__output_file << __frontmatter.__open_divider << std::endl;
 	std::map<std::string, std::string>::iterator _trav = __frontmatter.list.begin();
 
 	while (_trav != __frontmatter.list.end()) {
-		__output_file << __frontmatter.__tab << is_json(__frontmatter_type, encloseQuote(_trav->first), _trav->first) << __frontmatter.__assigner << " " << is_yaml(__frontmatter_type, _trav->second, encloseQuote(_trav->second)) << is_json(__frontmatter_type, ",", "") << std::endl;
+		__output_file << __frontmatter.__tab << is_json(__frontmatter_type, encloseQuote(_trav->first), _trav->first) << __frontmatter.__space << __frontmatter.__assigner << " " << _trav->second << is_json(__frontmatter_type, ",", "") << std::endl;
 		_trav++;
 	}
 
@@ -139,15 +128,13 @@ int post_write(std::string __file_path, frontmatter __frontmatter, std::string _
 
 int post_write_text(std::string __output_path, std::string __content) {
 	if (__content.empty()) 
-		return return_error_code(41, "Content from file is empty");
+		exit_error_code(41, "Content from file is empty");
 	
 	if (!is_markdown(__output_path))
 		__output_path += ".md";
 	
 	std::ofstream _output;
-	_output.open(__output_path);
-	if (!_output.is_open())
-		return 3;
+	open_file_o(_output, __output_path);
 
 	_output << __content;
 	std::cout << "\n" << __output_path << " was successfully created.";

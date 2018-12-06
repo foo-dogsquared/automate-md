@@ -11,9 +11,9 @@
 
 #define INVALID_CHARS " !@#$%^&*()_+={}[]:;\"'<,>.?/|\\~`"
 
-int return_error_code(int error_num, std::string description) {
+void exit_error_code(int error_num, std::string description) {
     std::cerr << "Error " << error_num << ": " << description << std::endl;
-    return error_num;
+    exit(error_num);
 }
 
 int prompt_int(std::string __question, int __minimum = 0, int __maximum = INT8_MAX)
