@@ -15,6 +15,7 @@ typedef struct _frontmatter
 	std::string __close_divider;
 	std::string __tab;
 	std::string __assigner;
+	std::string __space;
 } 
 frontmatter;
 
@@ -24,18 +25,21 @@ void init_fm_format_data(frontmatter &__fm) {
 		__fm.__close_divider = "---";
 		__fm.__tab = "";
 		__fm.__assigner = ":";
+		__fm.__space = "";
 	}
 	else if (__fm.type == "TOML" || __fm.type == "toml") {
 		__fm.__open_divider = "+++";
 		__fm.__close_divider = "+++";
 		__fm.__tab = "";
 		__fm.__assigner = "=";
+		__fm.__space = " ";
 	}
 	else if (__fm.type == "JSON" || __fm.type == "json") {
 		__fm.__open_divider = "{";
 		__fm.__close_divider = "}";
 		__fm.__tab = "\t";
 		__fm.__assigner = ":";
+		__fm.__space = "";
 	}
 }
 
