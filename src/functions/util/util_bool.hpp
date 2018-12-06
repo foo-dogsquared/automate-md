@@ -29,3 +29,17 @@ bool hasNondigits(std::string __str) {
 	else
 		return false;
 }
+
+bool str_is_array(std::string __str) {
+	if (__str.front() == '[' && __str.back() == ']')
+		return true;
+	else
+		return false;
+}
+
+bool is_quoted(std::string __str) {
+	if (__str.front() == '\"' && __str.back() == '\"')
+		return true;
+	else
+		return false;
+}
