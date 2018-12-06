@@ -7,14 +7,8 @@
 
 typedef struct _frontmatter
 {
-    std::string layout;
-    std::string author;
-    std::string title;
-    std::string date;
-    std::vector<std::string> categories;
+    std::map<std::string, std::string> list;
     int categories_length;
-    std::vector<std::string> tags;
     int tags_length;
-    std::map<std::string, std::string> others;
 } 
 frontmatter;
