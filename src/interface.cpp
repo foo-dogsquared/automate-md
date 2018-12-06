@@ -30,9 +30,7 @@ int main(int argc, char* argv[]) {
         else if (action == UPDATE)
             return 0;
         else if (action == RESET)
-            return 0;
-        else if (action == EXTRACT)
-            return post_extract(argv[2]);
+            return reset(argv[2]);
         else
             return return_error_code(2, "No available command");
     }
@@ -41,6 +39,8 @@ int main(int argc, char* argv[]) {
 
         if (action == CREATE)
             return create(argv[2], argv[3]);
+        else if (action == EXTRACT)
+            return extract(argv[2], argv[3]);
 		else
 			return return_error_code(2, "No available command");
     }
