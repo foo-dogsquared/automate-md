@@ -26,7 +26,7 @@ void open_file_o(std::ofstream &__output_file, std::string __output_path) {
 }
 
 bool is_frontmatter_tag(std::string __line) {
-	std::regex __frontmatter_tags("\\+\\+\\+|---|{|}\\s*");
+	std::regex __frontmatter_tags("\\+\\+\\+\\s*|---\\s*|\\{\\s*|\\}\\s*");
 	if (std::regex_match(__line, __frontmatter_tags))
 		return true;
 	else
@@ -54,12 +54,35 @@ frontmatter extract_frontmatter(std::string __file_path) {
 	std::string _line;
 	bool _is_opening_tag_parse = false;
 	bool _is_closing_tag_parse = false;
-	while (getline(_input_file, _line) && (!_is_closing_tag_parse || !_is_opening_tag_parse)) {
-		if (is_frontmatter_tag(_line))
-			std::cout << _line << std::endl;
+	std::regex _key_values_regex;
+	std::smatch _matches;
+	std::ssub_match _key, _value;
+	while (std::getline(_input_file, _line) && (!_is_closing_tag_parse || !_is_opening_tag_parse)) {
+		// first line is most likely be the frontmatter opening tag
+		if (is_frontmatter_tag(_line) && !_is_opening_tag_parse) {
+			_is_opening_tag_parse = true;
+			_output.type = detect_type(_line);
+			init_fm_format_data(_output);
+			_key_values_regex = "^\\s*\"?([A-Za-z0-9!@#$%^&*()_+-]+)\"?\\s*" + _output.__assigner + "\\s*(.+)\\s*";
+		}
+
+		else if (_is_opening_tag_parse && !_is_closing_tag_parse && std::regex_match(_line, _matches, _key_values_regex)) {
+			_key = _matches[1];
+			_value = _matches[2];
+			_output.list.insert(std::make_pair(_key.str(), _value.str()));
+		}
+
+		else if (is_frontmatter_tag(_line) && _is_opening_tag_parse && !_is_closing_tag_parse) {
+			_is_closing_tag_parse = true;
+			_input_file.close();
+			break;
+		}
+
+		else {
+			continue;
+		}
 	}
 	
-
 	return _output;
 }
 
@@ -71,8 +94,7 @@ std::string extract_content(std::string __file_path) {
 	std::regex _whitespace("\\s+");
 	bool _is_opening_tag_parse = false, _is_closing_tag_parse = false, _content_start = false;
 	for (std::string _line; std::getline(_input_file, _line);) {
-		std::cout << is_frontmatter_tag(_line) << "---"  << std::endl;
-		if (!_is_opening_tag_parse)
+		if (is_frontmatter_tag(_line) && !_is_opening_tag_parse)
 			_is_opening_tag_parse = true;
 		else if (is_frontmatter_tag(_line) && _is_opening_tag_parse && !_is_closing_tag_parse)
 			_is_closing_tag_parse = true;
@@ -110,6 +132,7 @@ int post_write(std::string __file_path, frontmatter __frontmatter, std::string _
 
 	std::cout << "\n" + __file_path + " was successfully created." << std::endl;
 
+	__output_file.flush();
 	__output_file.close();
 	return 0;
 }

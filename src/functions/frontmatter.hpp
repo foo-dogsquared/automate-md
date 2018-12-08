@@ -1,4 +1,5 @@
 #include <map>
+#include <regex>
 
 #define MAX_ARR_LENGTH 16
 #define MAX_DATE_LENGTH 26
@@ -44,11 +45,12 @@ void init_fm_format_data(frontmatter &__fm) {
 }
 
 std::string detect_type(std::string __str) {
-	if (__str == "---")
+	std::regex __YAML("---\\s*"), __TOML("\\+\\+\\+\\s*"), __JSON("\\{\\s*|\\}\\s*");
+	if (std::regex_match(__str, __YAML))
 		return "YAML";
-	else if (__str == "+++")
+	else if (std::regex_match(__str, __TOML))
 		return "TOML";
-	else if (__str == "{" || __str == "}")
+	else if (std::regex_match(__str, __JSON))
 		return "JSON";
 	else
 		return nullptr;
