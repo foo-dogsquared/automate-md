@@ -1,4 +1,6 @@
 # automate-md
+[![HitCount](http://hits.dwyl.io/foo-dogsquared/automate-md.svg)](http://hits.dwyl.io/foo-dogsquared/automate-md)
+
 A program that just automates creation of .md files that is suitable for Jekyll (and Hugo) with the correct frontmatter, probably.
 
 ## How to use
