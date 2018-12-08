@@ -70,9 +70,6 @@ void reset(std::string __file_path) {
 void extract(std::string __file_path, std::string __output_path, std::string __part = "frontmatter") {
 	if (__output_path.empty())
 		exit_error_code(40, "Command \"extract\" needs an output path");
-
-	if (__part.compare("frontmatter") || __part.compare("FRONTMATTER"))
-		post_extract(__file_path, __output_path, __part);
 	
-	exit(0);
+	exit(post_extract(__file_path, __output_path, __part));
 }

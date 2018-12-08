@@ -12,6 +12,7 @@
 void open_file_i(std::ifstream &__input_file, std::string __input_path) {
 	__input_file.open(__input_path);
 
+	std::cout << "Opening file at " << __input_path << std::endl;
 	if (!__input_file.is_open())
 		exit_error_code(3, "Cannot open file at: " + __input_path);
 }
@@ -19,12 +20,14 @@ void open_file_i(std::ifstream &__input_file, std::string __input_path) {
 void open_file_o(std::ofstream &__output_file, std::string __output_path) {
 	__output_file.open(__output_path);
 
+	std::cout << "Writing file at " << __output_path << std::endl;
 	if (!__output_file.is_open())
 		exit_error_code(3, "Cannot open file at: " + __output_path);
 }
 
 bool is_frontmatter_tag(std::string __line) {
-	if (__line == "+++" || __line == "---" || __line == "{" || __line == "}")
+	std::regex __frontmatter_tags("\\+\\+\\+|---|{|}\\s*");
+	if (std::regex_match(__line, __frontmatter_tags))
 		return true;
 	else
 		return false;
@@ -41,36 +44,21 @@ bool is_markdown(std::string __file_path) {
 
 frontmatter extract_frontmatter(std::string __file_path) {
 	frontmatter _output;
-	std::ifstream _input_file;
-	open_file_i(_input_file, __file_path);
+	std::ifstream _input_file(__file_path, std::ios::in | std::ios::binary);
 
-	bool _is_opening_tag_parse = false, _is_closing_tag_parse = false;
+	if (_input_file.good())
+		std::cout << "K" << std::endl;
+	else
+		std::cout << "Mbad" << std::endl;
 
 	std::string _line;
-	std::regex _key_value_regex;
-	std::smatch _matches;
-	std::ssub_match _key, _value;
-	while (!_is_opening_tag_parse || !_is_closing_tag_parse || _input_file.eof()) {
-		getline(_input_file, _line);
-		if (is_frontmatter_tag(_line)) {
-			_output.type = detect_type(_line);
-			init_fm_format_data(_output);
-			_key_value_regex = "^\\s*\"?([A-Za-z0-9!@#$%^&*()_+-]+)\"?\\s*" + _output.__assigner + "\\s*(.+)";
-
-			if (!_is_opening_tag_parse && !_is_closing_tag_parse)
-				_is_opening_tag_parse = true;
-			else if (_is_opening_tag_parse && !_is_closing_tag_parse) {
-				_is_closing_tag_parse = true;
-				_input_file.close();
-				break;
-			}
-		}
-		else if (_is_opening_tag_parse && std::regex_match(_line, _matches, _key_value_regex)) {
-			_key = _matches[1];
-			_value = _matches[2];
-			_output.list.insert(std::make_pair(_key.str(), _value.str()));
-		}
+	bool _is_opening_tag_parse = false;
+	bool _is_closing_tag_parse = false;
+	while (getline(_input_file, _line) && (!_is_closing_tag_parse || !_is_opening_tag_parse)) {
+		if (is_frontmatter_tag(_line))
+			std::cout << _line << std::endl;
 	}
+	
 
 	return _output;
 }
@@ -82,8 +70,8 @@ std::string extract_content(std::string __file_path) {
 
 	std::regex _whitespace("\\s+");
 	bool _is_opening_tag_parse = false, _is_closing_tag_parse = false, _content_start = false;
-	for (std::string _line = "a"; std::getline(_input_file, _line);) {
-		std::cout << _line << is_frontmatter_tag(_line) << "---"  << std::endl;
+	for (std::string _line; std::getline(_input_file, _line);) {
+		std::cout << is_frontmatter_tag(_line) << "---"  << std::endl;
 		if (!_is_opening_tag_parse)
 			_is_opening_tag_parse = true;
 		else if (is_frontmatter_tag(_line) && _is_opening_tag_parse && !_is_closing_tag_parse)
@@ -114,7 +102,7 @@ int post_write(std::string __file_path, frontmatter __frontmatter, std::string _
 	std::map<std::string, std::string>::iterator _trav = __frontmatter.list.begin();
 
 	while (_trav != __frontmatter.list.end()) {
-		__output_file << __frontmatter.__tab << is_json(__frontmatter_type, encloseQuote(_trav->first), _trav->first) << __frontmatter.__space << __frontmatter.__assigner << " " << _trav->second << is_json(__frontmatter_type, ",", "") << std::endl;
+		__output_file << __frontmatter.__tab << is_json(__frontmatter_type, encloseQuote(_trav->first), _trav->first) << __frontmatter.__space << __frontmatter.__assigner << " " << _trav->second << is_json(__frontmatter_type, ",", "") << "\n";
 		_trav++;
 	}
 
@@ -147,6 +135,7 @@ int post_parse(std::string __file_path) {
 }
 
 int post_extract(std::string __file_path, std::string __output_path, std::string __part = "frontmatter") {
+	std::cout << "Extracting " << __part << " from " << __file_path << std::endl;
 	if (__part == "frontmatter" || __part == "FRONTMATTER") {
 		frontmatter _fm = extract_frontmatter(__file_path);
 		return post_write(__output_path, _fm, _fm.type);
