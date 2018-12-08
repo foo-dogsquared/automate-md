@@ -10,8 +10,6 @@
 #define RESET "reset"
 #define EXTRACT "extract"
 
-using namespace std;
-
 int main(int argc, char* argv[]) {
     if (argc == 1) {
         cli_help_section();
@@ -22,7 +20,7 @@ int main(int argc, char* argv[]) {
         exit_error_code(1, "Needs a parameter for the said action");
     }
     else if (argc == 3) {
-        string action = argv[1];
+        std::string action = argv[1];
 
         if (action == CREATE)
             create(argv[2]);
@@ -34,7 +32,7 @@ int main(int argc, char* argv[]) {
             exit_error_code(2, "No available command");
     }
     else if (argc == 4) {
-        string action = argv[1];
+        std::string action = argv[1];
 
         if (action == CREATE)
             create(argv[2], argv[3]);
@@ -44,7 +42,7 @@ int main(int argc, char* argv[]) {
 			exit_error_code(2, "No available command");
     }
     else if (argc == 5) {
-        string action = argv[1];
+        std::string action = argv[1];
 
         if (action == CREATE)
             create(argv[2], argv[3], argv[4]);
@@ -54,7 +52,7 @@ int main(int argc, char* argv[]) {
 			exit_error_code(2, "No available command");
     }
     else if (argc == 6) {
-        string action = argv[1];
+        std::string action = argv[1];
         if (action == CREATE)
             create(argv[2], argv[3], argv[4], argv[5]);
 		else
