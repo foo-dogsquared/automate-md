@@ -60,6 +60,14 @@ std::vector<std::string> split(std::string __str, std::string __delimiters) {
 	return  _arr;
 }
 
+/** Returns a vector of strings that has been delimited by programmer-specified characters, 
+* similar to JavaScript's split (https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/split)
+*
+* @param __str - the string to be split
+* @param __delimiters - a string that contains a regex string; refer to link for the regex syntax 
+*
+* LINK: http://www.cplusplus.com/reference/regex/ECMAScript/
+**/
 std::vector<std::string> arr_extract(std::string __arr_str) {
 
 	std::vector<std::string> _arr;
@@ -69,7 +77,7 @@ std::vector<std::string> arr_extract(std::string __arr_str) {
 		return _arr;
 	}
 
-	std::regex _vector_elem("\"\\w*\"");
+	std::regex _vector_elem("\"?\\w*\"?");
 	
 	for (std::sregex_iterator _match = std::sregex_iterator(__arr_str.begin(), __arr_str.end(), _vector_elem); _match != std::sregex_iterator(); ++_match) {
 		std::smatch _word = *_match;

@@ -43,8 +43,8 @@ int main(int argc, char* argv[]) {
             create(required_param, optional_params);
         else if (action == "UPDATE" || action == "update")
             update(required_param, optional_params);
-        // else if (action == "EXTRACT" || action == "extract")
-        //  extract(required_param, optional_params);
+        else if (action == "EXTRACT" || action == "extract")
+            extract(required_param, optional_params);
         
         return 0;
     }

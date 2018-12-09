@@ -60,7 +60,7 @@ void create(std::string __title, std::map<std::string, std::string> __optional_p
 	
 	// default parameters for the frontmatter format
 	if (__file.type.empty())
-		__file.type = "JSON";
+		__file.type = "YAML";
 	
 	// default parameters for the path
 	if (_output_path.empty())
@@ -132,7 +132,7 @@ void update(std::string __file_path, std::map<std::string, std::string> __option
 
 	int _exit_code = post_update(__file_path, _fm, _fm.type, _content);
 	if (_exit_code == 0)
-		std::cout << "\n" << __file_path << " was successfully created.";
+		std::cout << "\n" << __file_path << " was successfully updated.";
 	exit(_exit_code);
 }
 
@@ -145,9 +145,31 @@ void reset(std::string __file_path) {
 	exit(post_write(__file_path, _fm));
 }
 
-void extract(std::string __file_path, std::string __output_path, std::string __part = "frontmatter") {
-	if (__output_path.empty())
-		exit_error_code(40, "Command \"extract\" needs an output path");
+void extract(std::string __file_path, std::map<std::string, std::string> __options) {
+	std::string _output_path;
+	std::string _part;
+	int _exit_code = 0;
+
+	if ((__options.find(MARKDOWN_PART) != __options.end()) && (__options.find(MARKDOWN_PART)->second == "frontmatter" || __options.find(MARKDOWN_PART)->second == "content"))
+		_part = __options.find(MARKDOWN_PART)->second;
+	else
+		_part = "frontmatter";
+
+	if (__options.find(OUTPUT_PATH) != __options.end())
+		_output_path = __options.find(OUTPUT_PATH)->second;
+	else
+		_output_path = __file_path;
+
+	std::cout << "Extracting " << _part << " from " << __file_path << std::endl;
+	if (_part == "frontmatter" || _part == "FRONTMATTER") {
+		frontmatter _fm = extract_frontmatter(__file_path);
+		_exit_code = post_write(__file_path, _fm, _fm.type);
+	} else if (_part == "content" || _part == "CONTENT") {
+		std::string _content = extract_content(__file_path);
+		if (_content.empty()) 
+			exit_error_code(41, "Content from file is empty");
+		_exit_code = post_write_text(__file_path, _content);
+	}
 	
-	exit(post_extract(__file_path, __output_path, __part));
+	exit(_exit_code);
 }

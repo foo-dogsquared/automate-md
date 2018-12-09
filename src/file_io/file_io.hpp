@@ -117,7 +117,7 @@ int post_write(std::string __file_path, frontmatter __frontmatter, std::string _
 
 	if (__operation == "write")
 		__output_file.open(__file_path, std::ios::out);
-	else if (__operation == "append")
+	else if (__operation == "append") 
 		__output_file.open(__file_path, std::ios::out | std::ios::app);
 	else if (__operation == "replace")
 		__output_file.open(__file_path, std::ios::out | std::ios::trunc);
@@ -143,21 +143,22 @@ int post_write(std::string __file_path, frontmatter __frontmatter, std::string _
 *
 * @param __output_path - path of file to be written (but not overwritten)
 * @param __content - the string to be written on the file
-* @param __operation - the type of output file stream operation for the file; possible values are "write" and "append"
+* @param __operation - the type of output file stream operation for the file; possible values are "write", "append", and "replace"
 *
 **/
 int post_write_text(std::string __output_path, std::string __content, std::string __operation = "write") {
-	if (__content.empty()) 
-		exit_error_code(41, "Content from file is empty");
-	
 	if (!is_markdown(__output_path))
 		__output_path += ".md";
 	
 	std::ofstream _output;
 	if (__operation == "write")
 		_output.open(__output_path, std::ios::out);
-	else if (__operation == "append")
-		_output.open(__output_path, std::ios::app);
+	else if (__operation == "append") {
+		_output.open(__output_path, std::ios::out | std::ios::app);
+		_output << "\n";
+	}
+	else if (__operation == "replace")
+		_output.open(__output_path, std::ios::out | std::ios::trunc);
 
 	_output << __content;
 	return 0;
@@ -185,23 +186,4 @@ int post_update(std::string __file_path, frontmatter __fm, std::string __fm__typ
 	_exit_code += post_write_text(__file_path, __content, "append");
 
 	return _exit_code;
-}
-
-/** It will write a markdown file with the specified parts of the input file and
- * returns with an integer for the exit code
-*
-* @param __input_file - path of the input to be read
-* @param __output_path - path of file to be written (but not overwritten)
-* @param __part - the part of the input file to be read; possible values are "frontmatter" and "content"
-*
-**/
-int post_extract(std::string __file_path, std::string __output_path, std::string __part = "frontmatter") {
-	std::cout << "Extracting " << __part << " from " << __file_path << std::endl;
-	if (__part == "frontmatter" || __part == "FRONTMATTER") {
-		frontmatter _fm = extract_frontmatter(__file_path);
-		return post_write(__output_path, _fm, _fm.type);
-	} else if (__part == "content" || __part == "CONTENT") {
-		std::string _content = extract_content(__file_path);
-		return post_write_text(__output_path, _content);
-	}
 }
