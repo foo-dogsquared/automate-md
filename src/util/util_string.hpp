@@ -9,16 +9,26 @@ std::string enclose_str(std::string __word, std::string __start = "\"", std::str
 	return __start + __word + __end;
 }
 
-std::string remove_quote(std::string __word) {
-	if (__word.front() == '\"' && __word.back() == '\"') {
-		__word.erase(0);
-		__word.erase(__word.size() - 1);
+std::string remove_quote(std::string __word, std::string __start = "\"", std::string __end = "\"") {
+	std::string _output;
+	_output.assign(__word);
+
+	if (__word.substr(0, __start.length()) == __start && __word.substr(__word.length() - __end.length(), __end.length()) == __end) {
+		_output.erase(__start.length());
+		_output.erase(__word.length() - __end.length());
 	}
 
-	return __word;
+	return _output;
 }
 
-std::string getFormattedDateString(int __num = 0, const char *__format = "%F %T %z") {
+/** Returns a string that returns a formatted date string based on current time
+*
+* @param __num - the numbers of days relative to current day
+* @param __format - a string that denotes the format with the specifiers; refer to link for the specifiers
+*
+* LINK: https://www.tutorialspoint.com/c_standard_library/c_function_strftime.htm
+**/
+std::string get_current_formatted_date_string(int __num = 0, const char *__format = "%F %T %z") {
 	time_t _now = time(0);
 	char iso_string[MAX_DATE_STRING];
 
@@ -33,9 +43,18 @@ std::string getFormattedDateString(int __num = 0, const char *__format = "%F %T 
 	return iso_string;
 }
 
-std::vector<std::string> split(std::string __str, const std::regex __delimiters) {
+/** Returns a vector of strings that has been delimited by programmer-specified characters, 
+* similar to JavaScript's split (https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/split)
+*
+* @param __str - the string to be split
+* @param __delimiters - a string that contains a regex string; refer to link for the regex syntax 
+*
+* LINK: http://www.cplusplus.com/reference/regex/ECMAScript/
+**/
+std::vector<std::string> split(std::string __str, std::string __delimiters) {
+	const std::regex __invalid_chars(__delimiters);
 	const std::vector<std::string> _arr{ 
-		std::sregex_token_iterator(__str.begin(), __str.end(), __delimiters, -1), 
+		std::sregex_token_iterator(__str.begin(), __str.end(), __invalid_chars, -1), 
 		std::sregex_token_iterator() 
 	};
 	return  _arr;
@@ -64,9 +83,8 @@ std::vector<std::string> arr_extract(std::string __arr_str) {
 }
 
 std::string slugize_str(std::string __str) {
-	const std::regex __invalid_chars("[^A-Za-z0-9]");
 	std::string _slug;
-	std::vector<std::string> _words = split(__str, __invalid_chars);
+	std::vector<std::string> _words = split(__str, "[^A-Za-z0-9]");
 
 	if (_words.empty())
 		return __str;

@@ -6,6 +6,18 @@
 #include "../util/util.hpp"
 #include "cli_help.hpp"
 
+// optional action specifiers (command-specific)
+#define FM_TYPE "%fm_type"
+
+// for create()
+#define OUTPUT_PATH "%output_path"
+
+// for update()
+#define DELETE_KEYS "%delete_key"
+
+// for extract()
+#define MARKDOWN_PART "%part"
+
 void create(std::string __title, std::map<std::string, std::string> __optional_params) {
 	frontmatter __file;
 	std::string _output_path;
@@ -19,12 +31,12 @@ void create(std::string __title, std::map<std::string, std::string> __optional_p
 			_key = _trav->first;
 			_value = _trav->second;
 
-			if (_key == "fm_type" && !is_not_valid_fm_format(_value)) {
+			if (_key == FM_TYPE && !is_not_valid_fm_format(_value)) {
 				__file.type = _value;
 				_trav++;
 				continue;
 			}
-			else if (_key == "output_path") {
+			else if (_key == OUTPUT_PATH) {
 				_output_path = _value;
 				_trav++;
 				continue;
@@ -62,10 +74,10 @@ void create(std::string __title, std::map<std::string, std::string> __optional_p
 	if (__file.list.find("author") == __file.list.end())
 		__file.list.insert(std::make_pair("author", prompt("Who is the author in the post?") ) );
 
-	std::string full_iso_date_string = getFormattedDateString(publish_date);
+	std::string full_iso_date_string = get_current_formatted_date_string(publish_date);
 	__file.list.at("date") = full_iso_date_string;
 
-	std::string iso_date_string = getFormattedDateString(publish_date, "%F");
+	std::string iso_date_string = get_current_formatted_date_string(publish_date, "%F");
 	_output_path = check_dir_path(_output_path);
 	// Filling up the frontmatter with the necessary data
 	
@@ -77,21 +89,51 @@ void create(std::string __title, std::map<std::string, std::string> __optional_p
 	__file.tags_length = prompt_int("How many tags for this post?", 1, MAX_ARR_LENGTH);
 	__file.list.insert(std::make_pair("tags", prompt_arr("Tags", __file.tags_length)));
 
-	__file.list.insert(std::make_pair("title", enclose_str(__title)));
+	__file.list.insert(std::make_pair("title", __title));
 	
     std::string __file_name = _output_path + iso_date_string + "-" + slugize_str(__title) + ".md";
 
-	post_write(__file_name, __file, __file.type);
-	exit(0);
+	int _exit_code = post_write(__file_name, __file, __file.type);
+	if (_exit_code == 0)
+		std::cout << "\n" + __file_name + " successfully created." << std::endl;
+	exit(_exit_code);
 }
 
-// TODO: Complete the remaining functions
-// TODO: Complete update()
 void update(std::string __file_path, std::map<std::string, std::string> __options) {
 	if (__options.empty())
 		exit_error_code(20, "Command \"update\" needs at least one optional parameter.");
 	
-	exit(post_update(__file_path, _fm, _fm.type, _content));
+	frontmatter _fm = extract_frontmatter(__file_path);
+	std::string _content = extract_content(__file_path);
+
+	for (std::map<std::string, std::string>::iterator _trav = __options.begin(); _trav != __options.end(); _trav++) {
+		std::string _key = _trav->first, _value = _trav->second;
+		// since optional command specifiers are also in there, we have to search for it
+		if (_key == DELETE_KEYS) {
+			std::vector<std::string> _delete_list = arr_extract(_value);
+			
+			for (int index = 0; index < _delete_list.size(); index++) {
+				_fm.list.erase(_delete_list[index]);
+			}
+			continue;
+		}
+		else if (_key == FM_TYPE) {
+			_fm.type = _value;
+			continue;
+		}
+
+		// either adding or replacing values that are already in the _fm struct
+		if (_fm.list.find(_key) == _fm.list.end()) {
+			_fm.list.insert(std::make_pair(_key, _value));
+		}
+		else if (_value != _fm.list.find(_key)->second)
+			_fm.list[_key] = _value;
+	}
+
+	int _exit_code = post_update(__file_path, _fm, _fm.type, _content);
+	if (_exit_code == 0)
+		std::cout << "\n" << __file_path << " was successfully created.";
+	exit(_exit_code);
 }
 
 void reset(std::string __file_path) {

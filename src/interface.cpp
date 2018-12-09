@@ -22,7 +22,7 @@ int main(int argc, char* argv[]) {
         std::string action = argv[1];
         std::string required_param = argv[2];
 
-        std::regex option_regex("--(\\w+)=\"?(.+?)\"?");
+        std::regex option_regex("--(%?\\w+)=\"?(.+?)\"?");
         std::map<std::string, std::string> optional_params;
         std::smatch matches;
         std::string op_param, value;
@@ -41,6 +41,10 @@ int main(int argc, char* argv[]) {
 
         if (action == "CREATE" || action == "create")
             create(required_param, optional_params);
+        else if (action == "UPDATE" || action == "update")
+            update(required_param, optional_params);
+        // else if (action == "EXTRACT" || action == "extract")
+        //  extract(required_param, optional_params);
         
         return 0;
     }

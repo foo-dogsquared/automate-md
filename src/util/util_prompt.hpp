@@ -24,12 +24,12 @@ std::string prompt_arr(std::string __question, int __count) {
 	std::string _arr;
 
 	if (__count <= 0) {
-		std::cerr << "Given param \"count\" is less than 0" << std::endl;
+		std::cerr << "Given param \"count\" is less than or equal to 0." << std::endl;
 		return "";
 	}
 
 	for (int index = 0; index < __count; index++) {
-		std::string _word = "\"" + prompt( __question + " #" + std::to_string(index + 1)) + "\"";
+		std::string _word = prompt( __question + " #" + std::to_string(index + 1));
 		_arr += _word + ((index == __count - 1) ? "" : ", ");
 	}
 	

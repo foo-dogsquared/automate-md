@@ -20,12 +20,15 @@
  * Returns a frontmatter struct (hopefully filled with the values) 
  * by reading the file
  * 
- * @param file_path - self-explanatory
+ * @param file_path - path of file to be read
+ *  
  **/
 frontmatter extract_frontmatter(std::string __file_path) {
 	frontmatter _output;
-	std::ifstream _input_file;
-	open_file_i(_input_file, __file_path);
+	std::ifstream _input_file(__file_path);
+	std::cout << "Extracting frontmatter from: " << __file_path << std::endl;
+	if (!_input_file.is_open())
+		exit_error_code(3, "Cannot open file at: " + __file_path);		
 
 	std::string _line;
 	bool _is_opening_tag_parse = false;
@@ -67,12 +70,15 @@ frontmatter extract_frontmatter(std::string __file_path) {
  * Returns a string by reading the file and skipping the frontmatter
  * until it gets to the first non-whitespace character
  *
- * @param file_path
+ * @param file_path - path of file to be read
+ * 
  **/
 std::string extract_content(std::string __file_path) {
 	std::string _output;
-	std::ifstream _input_file;
-	open_file_i(_input_file, __file_path);
+	std::ifstream _input_file(__file_path);
+	std::cout << "Extracting content from: " << __file_path << std::endl;
+	if (!_input_file.is_open())
+		exit_error_code(3, "Cannot open file at: " + __file_path);		
 
 	std::regex _whitespace("\\s+");
 	bool _is_opening_tag_parse = false, _is_closing_tag_parse = false, _content_start = false;
@@ -95,12 +101,13 @@ std::string extract_content(std::string __file_path) {
 
 /** It will write a markdown file with the frontmatter and returns an integer for the exit code
 *
-* @param file_path
-* @param frontmatter - the instance of the frontmatter struct
-* @param frontmatter_type - the format of the frontmatter to be written in the file
+* @param __file_path
+* @param __frontmatter - the instance of the frontmatter struct
+* @param __frontmatter_type - the format of the frontmatter to be written in the file
+* @param __operation - the protocol to be followed when writing the file; possible values are "write", "append", and "replace"
 *
 **/
-int post_write(std::string __file_path, frontmatter __frontmatter, std::string __frontmatter_type = "YAML") {
+int post_write(std::string __file_path, frontmatter __frontmatter, std::string __frontmatter_type = "YAML", std::string __operation = "write") {
 	std::ofstream __output_file;
 	
 	init_fm_format_data(__frontmatter);  // defensive mechanism in case the struct frontmatter has no initialized data to get
@@ -108,7 +115,12 @@ int post_write(std::string __file_path, frontmatter __frontmatter, std::string _
 	if (!is_markdown(__file_path))
 		__file_path += ".md";
 
-	open_file_o(__output_file, __file_path);
+	if (__operation == "write")
+		__output_file.open(__file_path, std::ios::out);
+	else if (__operation == "append")
+		__output_file.open(__file_path, std::ios::out | std::ios::app);
+	else if (__operation == "replace")
+		__output_file.open(__file_path, std::ios::out | std::ios::trunc);
 
 	// Writing the frontmatter in the file
 	__output_file << __frontmatter.__open_divider << std::endl;
@@ -122,8 +134,6 @@ int post_write(std::string __file_path, frontmatter __frontmatter, std::string _
 
 	__output_file << __frontmatter.__close_divider << std::endl;
 
-	std::cout << "\n" + __file_path + " was successfully created." << std::endl;
-
 	__output_file.flush();
 	__output_file.close();
 	return 0;
@@ -131,11 +141,12 @@ int post_write(std::string __file_path, frontmatter __frontmatter, std::string _
 
 /** It will write a markdown file with the content and returns an integer for the exit code
 *
-* @param output_path
-* @param content - the string to be written on the file
+* @param __output_path - path of file to be written (but not overwritten)
+* @param __content - the string to be written on the file
+* @param __operation - the type of output file stream operation for the file; possible values are "write" and "append"
 *
 **/
-int post_write_text(std::string __output_path, std::string __content) {
+int post_write_text(std::string __output_path, std::string __content, std::string __operation = "write") {
 	if (__content.empty()) 
 		exit_error_code(41, "Content from file is empty");
 	
@@ -143,22 +154,47 @@ int post_write_text(std::string __output_path, std::string __content) {
 		__output_path += ".md";
 	
 	std::ofstream _output;
-	open_file_o(_output, __output_path);
+	if (__operation == "write")
+		_output.open(__output_path, std::ios::out);
+	else if (__operation == "append")
+		_output.open(__output_path, std::ios::app);
 
 	_output << __content;
-	std::cout << "\n" << __output_path << " was successfully created.";
-
 	return 0;
 }
 
+/** It will update the specified markdown file with the new data
+*
+* @param __file_path - path of file to be updated
+* @param __fm - a frontmatter struct that contains the data 
+* @param __fm_type - the frontmatter format to be written down onto the markdown file
+* @param __content - the content of the input file
+*
+**/
 int post_update(std::string __file_path, frontmatter __fm, std::string __fm__type = "YAML", std::string __content = "") {
 	std::fstream __file(__file_path);
 	if (!__file.is_open())
 		exit_error_code(3, "Cannot open file at " + __file_path);
 
-	return 0;
+	int _exit_code = 0;
+	
+	_exit_code = post_write(__file_path, __fm, __fm.type);
+	std::cout.flush();
+	std::cout << "Writing the frontmatter with the data..." << std::endl;
+	
+	_exit_code += post_write_text(__file_path, __content, "append");
+
+	return _exit_code;
 }
 
+/** It will write a markdown file with the specified parts of the input file and
+ * returns with an integer for the exit code
+*
+* @param __input_file - path of the input to be read
+* @param __output_path - path of file to be written (but not overwritten)
+* @param __part - the part of the input file to be read; possible values are "frontmatter" and "content"
+*
+**/
 int post_extract(std::string __file_path, std::string __output_path, std::string __part = "frontmatter") {
 	std::cout << "Extracting " << __part << " from " << __file_path << std::endl;
 	if (__part == "frontmatter" || __part == "FRONTMATTER") {
