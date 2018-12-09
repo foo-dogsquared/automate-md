@@ -1,7 +1,7 @@
 #pragma once
 
-#include "frontmatter.hpp"
-#include "util.hpp"
+#include "../frontmatter/frontmatter.hpp"
+#include "file_io_util.hpp"
 
 #include <fstream>
 #include <iostream>
@@ -9,39 +9,19 @@
 
 #define FILE_IO_ERROR_NUM 3
 
-void open_file_i(std::ifstream &__input_file, std::string __input_path) {
-	__input_file.open(__input_path);
+// OS-dependent newlines
+#ifdef _WIN32
+#define NEWLINE "\r\n" // Windows-styled newline
+#else
+#define NEWLINE "\n" // Unix-styled newline
+#endif
 
-	std::cout << "Opening file at " << __input_path << std::endl;
-	if (!__input_file.is_open())
-		exit_error_code(3, "Cannot open file at: " + __input_path);
-}
-
-void open_file_o(std::ofstream &__output_file, std::string __output_path) {
-	__output_file.open(__output_path);
-
-	std::cout << "Writing file at " << __output_path << std::endl;
-	if (!__output_file.is_open())
-		exit_error_code(3, "Cannot open file at: " + __output_path);
-}
-
-bool is_frontmatter_tag(std::string __line) {
-	std::regex __frontmatter_tags("\\+\\+\\+\\s*|---\\s*|\\{\\s*|\\}\\s*");
-	if (std::regex_match(__line, __frontmatter_tags))
-		return true;
-	else
-		return false;
-}
-
-bool is_markdown(std::string __file_path) {
-	std::regex _file_ext_md(".+\\.md|\\.markdown$");
-
-	if (std::regex_match(__file_path, _file_ext_md))
-		return true;
-	else
-		return false;
-}
-
+/**
+ * Returns a frontmatter struct (hopefully filled with the values) 
+ * by reading the file
+ * 
+ * @param file_path - self-explanatory
+ **/
 frontmatter extract_frontmatter(std::string __file_path) {
 	frontmatter _output;
 	std::ifstream _input_file(__file_path, std::ios::in | std::ios::binary);
@@ -86,6 +66,12 @@ frontmatter extract_frontmatter(std::string __file_path) {
 	return _output;
 }
 
+/**
+ * Returns a string by reading the file and skipping the frontmatter 
+ * until it gets to the first non-whitespace character
+ * 
+ * @param file_path
+ **/
 std::string extract_content(std::string __file_path) {
 	std::string _output;
 	std::ifstream _input_file;
@@ -109,6 +95,13 @@ std::string extract_content(std::string __file_path) {
 	return _output;
 }
 
+/** It will write a markdown file with the frontmatter and returns an integer for the exit code
+*
+* @param file_path
+* @param frontmatter - the instance of the frontmatter struct
+* @param frontmatter_type - the format of the frontmatter to be written in the file
+*
+**/
 int post_write(std::string __file_path, frontmatter __frontmatter, std::string __frontmatter_type = "YAML") {
 	std::ofstream __output_file;
 	
@@ -124,7 +117,7 @@ int post_write(std::string __file_path, frontmatter __frontmatter, std::string _
 	std::map<std::string, std::string>::iterator _trav = __frontmatter.list.begin();
 
 	while (_trav != __frontmatter.list.end()) {
-		__output_file << __frontmatter.__tab << is_json(__frontmatter_type, encloseQuote(_trav->first), _trav->first) << __frontmatter.__space << __frontmatter.__assigner << " " << _trav->second << is_json(__frontmatter_type, ",", "") << "\n";
+		__output_file << __frontmatter.__tab << is_json(__frontmatter_type, encloseQuote(_trav->first), _trav->first) << __frontmatter.__space << __frontmatter.__assigner << " " << _trav->second << is_json(__frontmatter_type, ",", "") << NEWLINE;
 		_trav++;
 	}
 
@@ -137,6 +130,12 @@ int post_write(std::string __file_path, frontmatter __frontmatter, std::string _
 	return 0;
 }
 
+/** It will write a markdown file with the content and returns an integer for the exit code
+*
+* @param output_path
+* @param content - the string to be written on the file
+*
+**/
 int post_write_text(std::string __output_path, std::string __content) {
 	if (__content.empty()) 
 		exit_error_code(41, "Content from file is empty");
@@ -153,7 +152,9 @@ int post_write_text(std::string __output_path, std::string __content) {
 	return 0;
 }
 
-int post_parse(std::string __file_path) {
+int post_update(std::string __file_path, std::string __options) {
+
+
 	return 0;
 }
 

@@ -5,9 +5,9 @@
 #include <regex>
 #include <string>
 
-#include "util/util_bool.hpp"
-#include "util/util_string.hpp"
-#include "util/util_prompt.hpp"
+#include "util_bool.hpp"
+#include "util_string.hpp"
+#include "util_prompt.hpp"
 
 #define INVALID_CHARS " !@#$%^&*()_+={}[]:;\"'<,>.?/|\\~`"
 

@@ -2,8 +2,8 @@
 #include <iostream>
 #include <string>
 
-#include "../functions/file_io.hpp"
-#include "../functions/util.hpp"
+#include "../file_io/file_io.hpp"
+#include "../util/util.hpp"
 #include "cli_help.hpp"
 
 void create(std::string __title, std::string __publish_date = "0", std::string __output_path = "./", std::string __fm_type = "YAML") {
@@ -48,25 +48,22 @@ void create(std::string __title, std::string __publish_date = "0", std::string _
 
 // TODO: Complete the remaining functions
 // TODO: Complete update()
-void update(std::string __file_path, std::string __updated_title = nullptr, std::string __fm_type = nullptr) {
-	if (__updated_title.empty() && __fm_type.empty())
+void update(std::string __file_path, std::string __options...) {
+	if (__options.empty())
 		exit_error_code(20, "Command \"update\" needs at least one option parameter.");
 	
-	post_parse(__file_path);
-	exit(0);
+	exit(post_update(__file_path, __options));
 }
 
-// TODO: Complete reset()
 void reset(std::string __file_path) {
 	if (__file_path.empty())
 		exit_error_code(30, "Command \"reset\" needs the file path.");
 
 	frontmatter _fm = extract_frontmatter(__file_path);
 
-	post_write(__file_path, _fm);
+	exit(post_write(__file_path, _fm));
 }
 
-// TODO: Complete extract()
 void extract(std::string __file_path, std::string __output_path, std::string __part = "frontmatter") {
 	if (__output_path.empty())
 		exit_error_code(40, "Command \"extract\" needs an output path");
