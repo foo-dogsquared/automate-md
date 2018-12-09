@@ -16,14 +16,17 @@ void cli_help_section() {
 }
 
 void cli_action_detect(std::string action) {
-    if (action.compare("create") == 0) 
+    if (action == "create" || action == "CREATE") 
         std::cout << "\tUsage: " << cli_actions_format("create", "TITLE", "[PUBLISH_DATE] [FILE_NAME]") << std::endl;
-    else if (action.compare("update") == 0)
+    else if (action == "update" || action == "UPDATE")
         std::cout << "\tUsage: " << cli_actions_format("update", "FILE_NAME", "[UPDATED_TITLE]") << std::endl;
-    else if (action.compare("reset") == 0)
+    else if (action == "reset" || action == "RESET")
         std::cout << "\tUsage: " << cli_actions_format("reset", "FILE_NAME") << std::endl;
-    else if (action.compare("extract") == 0)
+    else if (action == "extract" || action == "EXTRACT")
         std::cout << "\tUsage: " << cli_actions_format("extract", "FILE_NAME") << std::endl;
-    else
+    else {
         std::cout << "Found no available command." << std::endl;
+        return;
+    }
+    exit_error_code(1, "Needs a parameter for the said action");
 }

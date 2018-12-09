@@ -9,6 +9,8 @@ Here's the basic representation of the program from multiple files:
         ├─── `reset()`
         └─── `extract()`
 
+All of the functions from `cli/cli_actions.hpp` are derived further from `file_io/file_io.hpp`.
+
 But the main files to be inspected for the core functions to work is from `/cli/cli_actions.hpp` and `/functions/file_io.hpp`.
 
 ## Error list:
@@ -30,4 +32,5 @@ But the main files to be inspected for the core functions to work is from `/cli/
 
 #### `extract` (40 - 49)
 - 40 - needing a param `@output_path`
-- 41 - content extracted from the file is empty
+- 41 - content extracted from the file is empty (if the param `@part` is `content`)
+

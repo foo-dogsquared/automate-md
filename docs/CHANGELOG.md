@@ -2,22 +2,25 @@
 Some of the planned changes are also listed in here.
 
 ## Work-in-progress
-- Add `update` command.
 - Add `reset` command.
-- Add `extract` command.
-- Add flags and options such as `--type VALUE` or `--type=VALUE`.
 
 ## [Unreleased]
-- nothing yet.
+- Nothing yet.
 
-## [0.9.4]
+## [0.9.5] - 2018-12-09
+### Added
+- Added command parameters
+- Added the ability to correctly interpret flags and options such as `--type VALUE` or `--type=VALUE`.
+- Added `update` command (in prototype).
+
+## [0.9.4] - 2018-12-08
 ### Changed
 - Updated the regex to interpret files more correctly.
 
 ### What's fixed?
 - Fixed the bug of hanging out when interpreting files that are not created with `automate-md` due to how inserting characters were actually applied when it is being copied or inserted by non-`automate-md` programs.
 
-## [0.9.3]
+## [0.9.3] - 2018-12-06
 ### Added
 - Added `extract` command.
 - Assigned an error number range to each command.

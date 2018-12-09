@@ -5,11 +5,9 @@
 #include <regex>
 #include <string>
 
-#include "util/util_bool.hpp"
-#include "util/util_string.hpp"
-#include "util/util_prompt.hpp"
-
-#define INVALID_CHARS " !@#$%^&*()_+={}[]:;\"'<,>.?/|\\~`"
+#include "util_bool.hpp"
+#include "util_string.hpp"
+#include "util_prompt.hpp"
 
 void exit_error_code(int error_num, std::string description) {
     std::cerr << "Error " << error_num << ": " << description << std::endl;
@@ -23,7 +21,7 @@ int prompt_int(std::string __question, int __minimum = 0, int __maximum = INT8_M
 	do {
 		_out = prompt(__question);
 
-		if (hasNondigits(_out))
+		if (has_non_digits(_out))
 			continue;
 
 		_num = stoi(_out);
