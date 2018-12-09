@@ -6,29 +6,63 @@
 #include "../util/util.hpp"
 #include "cli_help.hpp"
 
-void create(std::string __title, std::string __publish_date = "0", std::string __output_path = "./", std::string __fm_type = "YAML") {
+void create(std::string __title, std::map<std::string, std::string> __optional_params) {
 	frontmatter __file;
+	std::string _output_path;
+
+	if (!__optional_params.empty()) {
+		std::map<std::string, std::string>::iterator _trav = __optional_params.begin();
+
+		std::string _key, _value;
+		while (_trav != __optional_params.end()) {
+			_key = _trav->first;
+			_value = _trav->second;
+
+			if (_key == "fm_type") {
+				__file.type = _value;
+				continue;
+			}
+			else if (_key == "output_path") {
+				_output_path = _value;
+				continue;
+			}
+
+			__file.list.insert(std::make_pair(_key, _value));
+			_trav++;
+		}
+	}
 
     if (__title.length() > MAX_TITLE_LENGTH) {
         exit_error_code(10, "Title exceeds character limit of " + std::to_string(MAX_TITLE_LENGTH) +  " characters.");
 	}
 	
+	// default parameters for the publish date
 	int publish_date;
-
-	if (hasNondigits(__publish_date))
-		exit_error_code(11, "@param \"publish_date\" contains invalid characters for conversion.");
+	if (__file.list.at("date").empty() || hasNondigits(__file.list.at("date")))
+		publish_date = 0;
+	else
+		publish_date = stoi(__file.list["date"]);
 	
-	publish_date = stoi(__publish_date);
+	// default parameters for the frontmatter format
+	if (__file.type.empty())
+		__file.type = "YAML";
+	
+	// default parameters for the path
+	if (_output_path.empty())
+		_output_path = "./";
+
+	if (__file.list.find("layout") == __file.list.end())
+		__file.list.insert(std::make_pair("layout", prompt("What is the post layout in the frontmatter?")));
+
+	if (__file.list.find("author") == __file.list.end())
+		__file.list.insert(std::make_pair("author", prompt("Who is the author in the post?") ) );
+
 	std::string full_iso_date_string = getFormattedDateString(publish_date);
+	__file.list.at("date") = full_iso_date_string;
+
 	std::string iso_date_string = getFormattedDateString(publish_date, "%F");
-
-	std::string output_path = check_dir_path(__output_path);
-
+	_output_path = check_dir_path(_output_path);
 	// Filling up the frontmatter with the necessary data
-	__file.type = __fm_type;
-
-	__file.list.insert(std::make_pair("layout", prompt("What is the post layout in the frontmatter?")));
-	__file.list.insert(std::make_pair("author", prompt("Who is the author in the post?") ) );
 	
 	__file.categories_length = prompt_int("How many categories for this post?", 1, MAX_ARR_LENGTH);
 	__file.list.insert(std::make_pair("categories", prompt_arr("Categories", __file.categories_length) ));
@@ -40,9 +74,9 @@ void create(std::string __title, std::string __publish_date = "0", std::string _
 
 	__file.list.insert(std::make_pair("title", encloseQuote(__title)));
 	
-    std::string __file_name = output_path + iso_date_string + "-" + slugize_str(__title) + ".md";
+    std::string __file_name = _output_path + iso_date_string + "-" + slugize_str(__title) + ".md";
 
-	post_write(__file_name, __file, __fm_type);
+	post_write(__file_name, __file, __file.type);
 	exit(0);
 }
 

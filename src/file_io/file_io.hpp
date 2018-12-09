@@ -67,9 +67,9 @@ frontmatter extract_frontmatter(std::string __file_path) {
 }
 
 /**
- * Returns a string by reading the file and skipping the frontmatter 
+ * Returns a string by reading the file and skipping the frontmatter
  * until it gets to the first non-whitespace character
- * 
+ *
  * @param file_path
  **/
 std::string extract_content(std::string __file_path) {
