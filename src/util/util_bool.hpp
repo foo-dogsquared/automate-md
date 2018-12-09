@@ -21,7 +21,7 @@ bool _end_isDir(std::string __path) {
 		return false;
 }
 
-bool hasNondigits(std::string __str) {
+bool has_non_digits(std::string __str) {
 	std::regex __digit_regex("\\d+");
 
 	if (!std::regex_match(__str, __digit_regex))
@@ -42,4 +42,11 @@ bool is_quoted(std::string __str) {
 		return true;
 	else
 		return false;
+}
+
+bool is_not_valid_fm_format(std::string __str) {
+	if (__str != "YAML" || __str != "yaml" || __str != "JSON" || __str != "json" || __str != "TOML" || __str != "toml")
+		return false;
+	else
+		return true;
 }

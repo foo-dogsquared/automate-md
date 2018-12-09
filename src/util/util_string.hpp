@@ -5,11 +5,11 @@
 
 #define MAX_DATE_STRING 64
 
-std::string encloseQuote(std::string __word) {
-	return "\"" + __word + "\"";
+std::string enclose_str(std::string __word, std::string __start = "\"", std::string __end = "\"") {
+	return __start + __word + __end;
 }
 
-std::string removeQuote(std::string __word) {
+std::string remove_quote(std::string __word) {
 	if (__word.front() == '\"' && __word.back() == '\"') {
 		__word.erase(0);
 		__word.erase(__word.size() - 1);
@@ -31,20 +31,6 @@ std::string getFormattedDateString(int __num = 0, const char *__format = "%F %T 
 	strftime(iso_string, sizeof(iso_string), __format, _local_time);
 
 	return iso_string;
-}
-
-std::string is_json(std::string __type, std::string __affirm_value, std::string __deny_value) {
-	if (__type == "JSON" || __type == "json")
-		return __affirm_value;
-	else
-		return __deny_value;
-}
-
-std::string is_yaml(std::string __type, std::string __affirm_value, std::string __deny_value) {
-	if (__type == "YAML" || __type == "yaml")
-		return __affirm_value;
-	else
-		return __deny_value;
 }
 
 std::vector<std::string> split(std::string __str, const std::regex __delimiters) {
@@ -71,7 +57,7 @@ std::vector<std::string> arr_extract(std::string __arr_str) {
 		if (_word.empty())
 			continue;
 
-		_arr.push_back(removeQuote(_word.str())); 
+		_arr.push_back(remove_quote(_word.str())); 
 	}
 	
 	return _arr;
@@ -99,6 +85,7 @@ std::string slugize_str(std::string __str) {
 			_slug += _words[_word_index] + "-";
 	}
 
+	// in case the last caught member is a non-alphanumeric character
 	if (_slug.back() == '-')
 		_slug.erase(_slug.size() - 1);
 

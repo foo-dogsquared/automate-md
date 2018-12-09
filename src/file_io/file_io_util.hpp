@@ -36,3 +36,16 @@ bool is_markdown(std::string __file_path) {
 	else
 		return false;
 }
+
+std::string string_format(std::string __fm_type, std::string __str, std::string __type = "value") {
+	if (__type == "key") {
+		if (__fm_type == "JSON")
+			return enclose_str(__str);
+	}
+	else if (__type == "value") {
+		if (__fm_type == "JSON" || __fm_type == "TOML")
+			return enclose_str(__str);
+	}
+
+	return __str;
+}

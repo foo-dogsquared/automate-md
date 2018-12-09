@@ -24,12 +24,8 @@
  **/
 frontmatter extract_frontmatter(std::string __file_path) {
 	frontmatter _output;
-	std::ifstream _input_file(__file_path, std::ios::in | std::ios::binary);
-
-	if (_input_file.good())
-		std::cout << "K" << std::endl;
-	else
-		std::cout << "Mbad" << std::endl;
+	std::ifstream _input_file;
+	open_file_i(_input_file, __file_path);
 
 	std::string _line;
 	bool _is_opening_tag_parse = false;
@@ -63,6 +59,7 @@ frontmatter extract_frontmatter(std::string __file_path) {
 		}
 	}
 	
+	_input_file.close();
 	return _output;
 }
 
@@ -92,6 +89,7 @@ std::string extract_content(std::string __file_path) {
 		}
 	}
 
+	_input_file.close();
 	return _output;
 }
 
@@ -116,8 +114,9 @@ int post_write(std::string __file_path, frontmatter __frontmatter, std::string _
 	__output_file << __frontmatter.__open_divider << std::endl;
 	std::map<std::string, std::string>::iterator _trav = __frontmatter.list.begin();
 
-	while (_trav != __frontmatter.list.end()) {
-		__output_file << __frontmatter.__tab << is_json(__frontmatter_type, encloseQuote(_trav->first), _trav->first) << __frontmatter.__space << __frontmatter.__assigner << " " << _trav->second << is_json(__frontmatter_type, ",", "") << NEWLINE;
+	std::string _comma = ",";
+	while (_trav != __frontmatter.list.end()) {	
+		__output_file << __frontmatter.__tab << string_format(__frontmatter.type, _trav->first, "key") << __frontmatter.__space << __frontmatter.__assigner << " " << string_format(__frontmatter.type, _trav->second, "value") << NEWLINE;
 		_trav++;
 	}
 
@@ -152,8 +151,10 @@ int post_write_text(std::string __output_path, std::string __content) {
 	return 0;
 }
 
-int post_update(std::string __file_path, std::string __options) {
-
+int post_update(std::string __file_path, frontmatter __fm, std::string __fm__type = "YAML", std::string __content = "") {
+	std::fstream __file(__file_path);
+	if (!__file.is_open())
+		exit_error_code(3, "Cannot open file at " + __file_path);
 
 	return 0;
 }

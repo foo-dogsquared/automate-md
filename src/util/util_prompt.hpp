@@ -28,16 +28,13 @@ std::string prompt_arr(std::string __question, int __count) {
 		return "";
 	}
 
-	if (__count > 1)
-		_arr = "[";
-
 	for (int index = 0; index < __count; index++) {
 		std::string _word = "\"" + prompt( __question + " #" + std::to_string(index + 1)) + "\"";
 		_arr += _word + ((index == __count - 1) ? "" : ", ");
 	}
 	
 	if (__count > 1)
-		_arr += "]";
+		_arr = enclose_str(_arr, "[", "]");
 
 	return _arr;
 }

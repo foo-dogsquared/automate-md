@@ -10,6 +10,7 @@ void create(std::string __title, std::map<std::string, std::string> __optional_p
 	frontmatter __file;
 	std::string _output_path;
 
+	// parsing through the options (--OPTION=VALUE)
 	if (!__optional_params.empty()) {
 		std::map<std::string, std::string>::iterator _trav = __optional_params.begin();
 
@@ -18,12 +19,14 @@ void create(std::string __title, std::map<std::string, std::string> __optional_p
 			_key = _trav->first;
 			_value = _trav->second;
 
-			if (_key == "fm_type") {
+			if (_key == "fm_type" && !is_not_valid_fm_format(_value)) {
 				__file.type = _value;
+				_trav++;
 				continue;
 			}
 			else if (_key == "output_path") {
 				_output_path = _value;
+				_trav++;
 				continue;
 			}
 
@@ -38,22 +41,24 @@ void create(std::string __title, std::map<std::string, std::string> __optional_p
 	
 	// default parameters for the publish date
 	int publish_date;
-	if (__file.list.at("date").empty() || hasNondigits(__file.list.at("date")))
+	if (__file.list["date"].empty())
 		publish_date = 0;
 	else
 		publish_date = stoi(__file.list["date"]);
 	
 	// default parameters for the frontmatter format
 	if (__file.type.empty())
-		__file.type = "YAML";
+		__file.type = "JSON";
 	
 	// default parameters for the path
 	if (_output_path.empty())
 		_output_path = "./";
 
+	// prompting for layout when no given option
 	if (__file.list.find("layout") == __file.list.end())
 		__file.list.insert(std::make_pair("layout", prompt("What is the post layout in the frontmatter?")));
 
+	// prompting for author when no given option
 	if (__file.list.find("author") == __file.list.end())
 		__file.list.insert(std::make_pair("author", prompt("Who is the author in the post?") ) );
 
@@ -72,7 +77,7 @@ void create(std::string __title, std::map<std::string, std::string> __optional_p
 	__file.tags_length = prompt_int("How many tags for this post?", 1, MAX_ARR_LENGTH);
 	__file.list.insert(std::make_pair("tags", prompt_arr("Tags", __file.tags_length)));
 
-	__file.list.insert(std::make_pair("title", encloseQuote(__title)));
+	__file.list.insert(std::make_pair("title", enclose_str(__title)));
 	
     std::string __file_name = _output_path + iso_date_string + "-" + slugize_str(__title) + ".md";
 
@@ -82,11 +87,11 @@ void create(std::string __title, std::map<std::string, std::string> __optional_p
 
 // TODO: Complete the remaining functions
 // TODO: Complete update()
-void update(std::string __file_path, std::string __options...) {
+void update(std::string __file_path, std::map<std::string, std::string> __options) {
 	if (__options.empty())
-		exit_error_code(20, "Command \"update\" needs at least one option parameter.");
+		exit_error_code(20, "Command \"update\" needs at least one optional parameter.");
 	
-	exit(post_update(__file_path, __options));
+	exit(post_update(__file_path, _fm, _fm.type, _content));
 }
 
 void reset(std::string __file_path) {
