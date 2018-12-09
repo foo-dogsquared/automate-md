@@ -2,13 +2,11 @@
 Some of the planned changes are also listed in here.
 
 ## Work-in-progress
-- Add `update` command.
 - Add `reset` command.
-- Add `extract` command.
-- Add flags and options such as `--type VALUE` or `--type=VALUE`.
 
 ## [Unreleased]
-- nothing yet.
+- Add flags and options such as `--type VALUE` or `--type=VALUE`.
+- Add `update` command (in prototype).
 
 ## [0.9.4]
 ### Changed
