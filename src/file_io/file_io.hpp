@@ -35,20 +35,20 @@ frontmatter extract_frontmatter(std::string __file_path) {
 	bool _is_closing_tag_parse = false;
 	std::regex _key_values_regex;
 	std::smatch _matches;
-	std::ssub_match _key, _value;
+	std::string _key, _value;
 	while (std::getline(_input_file, _line) && (!_is_closing_tag_parse || !_is_opening_tag_parse)) {
 		// first line is most likely be the frontmatter opening tag
 		if (is_frontmatter_tag(_line) && !_is_opening_tag_parse) {
 			_is_opening_tag_parse = true;
 			_output.type = detect_type(_line);
 			init_fm_format_data(_output);
-			_key_values_regex = "^\\s*\"?([A-Za-z0-9!@#$%^&*()_+-]+)\"?\\s*" + _output.__assigner + "\\s*(.+)\\s*";
+			_key_values_regex = "^\\s*\"?([A-Za-z0-9!@#$%^&*()_+-]+)\"?\\s*" + _output.__assigner + "\\s*(.+)\\s*,?\\s*";
 		}
 
 		else if (_is_opening_tag_parse && !_is_closing_tag_parse && std::regex_match(_line, _matches, _key_values_regex)) {
-			_key = _matches[1];
-			_value = _matches[2];
-			_output.list.insert(std::make_pair(_key.str(), _value.str()));
+			_key = _matches[1].str();
+			_value = trim_both(trim_right(trim_right(_matches[2].str()), ","));
+			_output.list.insert(std::make_pair(_key, _value ) );
 		}
 
 		else if (is_frontmatter_tag(_line) && _is_opening_tag_parse && !_is_closing_tag_parse) {
@@ -107,7 +107,7 @@ std::string extract_content(std::string __file_path) {
 * @param __operation - the protocol to be followed when writing the file; possible values are "write", "append", and "replace"
 *
 **/
-int post_write(std::string __file_path, frontmatter __frontmatter, std::string __frontmatter_type = "YAML", std::string __operation = "write") {
+int post_fm_write(std::string __file_path, frontmatter __frontmatter, std::string __frontmatter_type = "YAML", std::string __operation = "write") {
 	std::ofstream __output_file;
 	
 	init_fm_format_data(__frontmatter);  // defensive mechanism in case the struct frontmatter has no initialized data to get
@@ -124,12 +124,15 @@ int post_write(std::string __file_path, frontmatter __frontmatter, std::string _
 
 	// Writing the frontmatter in the file
 	__output_file << __frontmatter.__open_divider << std::endl;
-	std::map<std::string, std::string>::iterator _trav = __frontmatter.list.begin();
 
 	std::string _comma = ",";
-	while (_trav != __frontmatter.list.end()) {	
-		__output_file << __frontmatter.__tab << string_format(__frontmatter.type, _trav->first, "key") << __frontmatter.__space << __frontmatter.__assigner << " " << string_format(__frontmatter.type, _trav->second, "value") << NEWLINE;
-		_trav++;
+	for (std::map<std::string, std::string>::iterator _trav = __frontmatter.list.begin(); _trav != __frontmatter.list.end(); _trav++) {
+		__output_file << __frontmatter.__tab << string_format(__frontmatter.type, _trav->first, "key") << __frontmatter.__space << __frontmatter.__assigner << " " << string_format(__frontmatter.type, _trav->second, "value");
+
+		if ((__frontmatter_type == "JSON" || __frontmatter_type == "json") && std::next(_trav) != __frontmatter.list.end())
+			__output_file << ", " << NEWLINE;
+		else
+			__output_file << NEWLINE;
 	}
 
 	__output_file << __frontmatter.__close_divider << std::endl;
@@ -146,7 +149,7 @@ int post_write(std::string __file_path, frontmatter __frontmatter, std::string _
 * @param __operation - the type of output file stream operation for the file; possible values are "write", "append", and "replace"
 *
 **/
-int post_write_text(std::string __output_path, std::string __content, std::string __operation = "write") {
+int post_content_write(std::string __output_path, std::string __content, std::string __operation = "write") {
 	if (!is_markdown(__output_path))
 		__output_path += ".md";
 	
@@ -179,11 +182,12 @@ int post_update(std::string __file_path, frontmatter __fm, std::string __fm__typ
 
 	int _exit_code = 0;
 	
-	_exit_code = post_write(__file_path, __fm, __fm.type);
+	_exit_code = post_fm_write(__file_path, __fm, __fm.type);
 	std::cout.flush();
-	std::cout << "Writing the frontmatter with the data..." << std::endl;
+	std::cout << "Frontmatter has been written in the file..." << std::endl;
 	
-	_exit_code += post_write_text(__file_path, __content, "append");
+	_exit_code += post_content_write(__file_path, __content, "append");
+	std::cout << "Content has been copied on the file..." << std::endl;
 
 	return _exit_code;
 }

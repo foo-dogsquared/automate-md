@@ -7,6 +7,14 @@ Some of the planned changes are also listed in here.
 ## [Unreleased]
 - Nothing yet.
 
+## [0.9.6] - 2018-12-10
+### Added
+- Added the `reset` command.
+- Added the `%update_date` optional command parameter on the `update` function.
+
+### What's fixed?
+- Fixed how quotes are interpreted and added in the markdown file.
+
 ## [0.9.5] - 2018-12-09
 ### Added
 - Added command parameters

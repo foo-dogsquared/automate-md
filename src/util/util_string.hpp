@@ -14,11 +14,25 @@ std::string remove_quote(std::string __word, std::string __start = "\"", std::st
 	_output.assign(__word);
 
 	if (__word.substr(0, __start.length()) == __start && __word.substr(__word.length() - __end.length(), __end.length()) == __end) {
-		_output.erase(__start.length());
+		_output.erase(0, __start.length());
 		_output.erase(__word.length() - __end.length());
 	}
 
 	return _output;
+}
+
+std::string trim_both(std::string __str, std::string __start = "\"", std::string __end = "\"") {
+	std::string _output = __str;
+	while (_output.substr(0, __start.length()) == __start && _output.substr(_output.length() - __end.length(), __end.length()) == __end) {
+		_output.erase(0, __start.length());
+		_output.erase(_output.length() - __end.length(), __end.length());
+	}
+
+	return _output;
+}
+
+std::string trim_right(std::string __str, std::string __keychars = " \r\n\t") {
+	return __str.erase(__str.find_last_not_of(__keychars) + 1);
 }
 
 /** Returns a string that returns a formatted date string based on current time
@@ -60,19 +74,19 @@ std::vector<std::string> split(std::string __str, std::string __delimiters) {
 	return  _arr;
 }
 
-/** Returns a vector of strings that has been delimited by programmer-specified characters, 
-* similar to JavaScript's split (https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/split)
+/** Returns a vector of strings that has been extract from a JSON array which means 
+ * it has to be delimited by a comma; 
+ * returns a vector with one element if the string does not start with the opening square bracket ('[')
+ * or does not end with the closing square bracket (']') 
 *
-* @param __str - the string to be split
-* @param __delimiters - a string that contains a regex string; refer to link for the regex syntax 
+* @param __arr_str - the string to be split
 *
-* LINK: http://www.cplusplus.com/reference/regex/ECMAScript/
 **/
 std::vector<std::string> arr_extract(std::string __arr_str) {
 
 	std::vector<std::string> _arr;
 
-	if (__arr_str.front() != '[' && __arr_str.back() != ']') {
+	if (__arr_str.front() != '[' || __arr_str.back() != ']') {
 		_arr.push_back(__arr_str);
 		return _arr;
 	}

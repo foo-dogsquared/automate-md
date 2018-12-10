@@ -14,6 +14,7 @@
 
 // for update()
 #define DELETE_KEYS "%delete_key"
+#define UPDATE_DATE "%update_date"
 
 // for extract()
 #define MARKDOWN_PART "%part"
@@ -93,7 +94,7 @@ void create(std::string __title, std::map<std::string, std::string> __optional_p
 	
     std::string __file_name = _output_path + iso_date_string + "-" + slugize_str(__title) + ".md";
 
-	int _exit_code = post_write(__file_name, __file, __file.type);
+	int _exit_code = post_fm_write(__file_name, __file, __file.type);
 	if (_exit_code == 0)
 		std::cout << "\n" + __file_name + " successfully created." << std::endl;
 	exit(_exit_code);
@@ -102,6 +103,8 @@ void create(std::string __title, std::map<std::string, std::string> __optional_p
 void update(std::string __file_path, std::map<std::string, std::string> __options) {
 	if (__options.empty())
 		exit_error_code(20, "Command \"update\" needs at least one optional parameter.");
+
+	confirm_prompt();
 	
 	frontmatter _fm = extract_frontmatter(__file_path);
 	std::string _content = extract_content(__file_path);
@@ -115,6 +118,17 @@ void update(std::string __file_path, std::map<std::string, std::string> __option
 			for (int index = 0; index < _delete_list.size(); index++) {
 				_fm.list.erase(_delete_list[index]);
 			}
+			continue;
+		}
+		else if (_key == UPDATE_DATE) {
+			if (has_non_digits(_value))
+				std::cout << "%update_date optional command parameter has a non-digit character" << std::endl;
+			
+			if (_fm.list.find("date") == _fm.list.end())
+				_fm.list.insert(std::make_pair("date", get_current_formatted_date_string(stoi(_value)) ));
+			else
+				_fm.list["date"] = get_current_formatted_date_string(stoi(_value));
+
 			continue;
 		}
 		else if (_key == FM_TYPE) {
@@ -140,9 +154,13 @@ void reset(std::string __file_path) {
 	if (__file_path.empty())
 		exit_error_code(30, "Command \"reset\" needs the file path.");
 
+	confirm_prompt();
+
 	frontmatter _fm = extract_frontmatter(__file_path);
 
-	exit(post_write(__file_path, _fm));
+	int _exit_code = post_fm_write(__file_path, _fm);
+	std::cout << "File has been reset." << std::endl;
+	exit(_exit_code);
 }
 
 void extract(std::string __file_path, std::map<std::string, std::string> __options) {
@@ -160,15 +178,14 @@ void extract(std::string __file_path, std::map<std::string, std::string> __optio
 	else
 		_output_path = __file_path;
 
-	std::cout << "Extracting " << _part << " from " << __file_path << std::endl;
 	if (_part == "frontmatter" || _part == "FRONTMATTER") {
 		frontmatter _fm = extract_frontmatter(__file_path);
-		_exit_code = post_write(__file_path, _fm, _fm.type);
+		_exit_code = post_fm_write(__file_path, _fm, _fm.type);
 	} else if (_part == "content" || _part == "CONTENT") {
 		std::string _content = extract_content(__file_path);
 		if (_content.empty()) 
 			exit_error_code(41, "Content from file is empty");
-		_exit_code = post_write_text(__file_path, _content);
+		_exit_code = post_content_write(__file_path, _content);
 	}
 	
 	exit(_exit_code);

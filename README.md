@@ -122,12 +122,13 @@ With each of the markdown has difference like with the first file having JSON fo
 ##### Format and available parameters:
 
 ```bash
-update FILE_PATH --%delete_key=[key1,key2,key3,...] --%fm_type=[JSON || YAML || TOML] --%force --any_option=any_value
+update FILE_PATH --%delete_key=[key1,key2,key3,...] --%fm_type=[JSON || YAML || TOML] --%update_date=RELATIVE_DAYS --%force --any_option=any_value
 ```
 
 ##### Command parameters:
 - `delete_key` - a list of keys separated by a comma **with no whitespace character** to be deleted on the frontmatter
 - `fm_type` - the format of the frontmatter to be updated with
+- `update_date` - it will update the date value with the relative number of days (also it will overwrite it in a complete ISO date string format [`%F %T %z`](https://www.tutorialspoint.com/c_standard_library/c_function_strftime.htm))
 
 Just like from the `create()` function, you can set any option with any value to be included in the frontmatter. And get this, there's only one prompt which is there for safety reasons, for course. Well, you can skip the prompt by typing `--%force` although it requires more key presses than pressing the enter button, typing `Y`, `y`, `N`, or `n`, and pressing Enter again. Could be useful for automated updating, who knows...
 
