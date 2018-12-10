@@ -93,7 +93,7 @@ void create(std::string __title, std::map<std::string, std::string> __optional_p
 	
     std::string __file_name = _output_path + iso_date_string + "-" + slugize_str(__title) + ".md";
 
-	int _exit_code = post_write(__file_name, __file, __file.type);
+	int _exit_code = post_fm_write(__file_name, __file, __file.type);
 	if (_exit_code == 0)
 		std::cout << "\n" + __file_name + " successfully created." << std::endl;
 	exit(_exit_code);
@@ -142,7 +142,7 @@ void reset(std::string __file_path) {
 
 	frontmatter _fm = extract_frontmatter(__file_path);
 
-	exit(post_write(__file_path, _fm));
+	exit(post_fm_write(__file_path, _fm));
 }
 
 void extract(std::string __file_path, std::map<std::string, std::string> __options) {
@@ -160,15 +160,14 @@ void extract(std::string __file_path, std::map<std::string, std::string> __optio
 	else
 		_output_path = __file_path;
 
-	std::cout << "Extracting " << _part << " from " << __file_path << std::endl;
 	if (_part == "frontmatter" || _part == "FRONTMATTER") {
 		frontmatter _fm = extract_frontmatter(__file_path);
-		_exit_code = post_write(__file_path, _fm, _fm.type);
+		_exit_code = post_fm_write(__file_path, _fm, _fm.type);
 	} else if (_part == "content" || _part == "CONTENT") {
 		std::string _content = extract_content(__file_path);
 		if (_content.empty()) 
 			exit_error_code(41, "Content from file is empty");
-		_exit_code = post_write_text(__file_path, _content);
+		_exit_code = post_content_write(__file_path, _content);
 	}
 	
 	exit(_exit_code);

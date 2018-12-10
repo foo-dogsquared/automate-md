@@ -14,8 +14,18 @@ std::string remove_quote(std::string __word, std::string __start = "\"", std::st
 	_output.assign(__word);
 
 	if (__word.substr(0, __start.length()) == __start && __word.substr(__word.length() - __end.length(), __end.length()) == __end) {
-		_output.erase(__start.length());
+		_output.erase(0, __start.length());
 		_output.erase(__word.length() - __end.length());
+	}
+
+	return _output;
+}
+
+std::string strip_all(std::string __str, std::string __start = "\"", std::string __end = "\"") {
+	std::string _output = __str;
+	while (_output.substr(0, __start.length()) == __start && _output.substr(_output.length() - __end.length(), __end.length()) == __end) {
+		_output.erase(0, __start.length());
+		_output.erase(_output.length() - __end.length(), __end.length());
 	}
 
 	return _output;
