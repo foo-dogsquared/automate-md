@@ -42,12 +42,12 @@ frontmatter extract_frontmatter(std::string __file_path) {
 			_is_opening_tag_parse = true;
 			_output.type = detect_type(_line);
 			init_fm_format_data(_output);
-			_key_values_regex = "^\\s*\"?([A-Za-z0-9!@#$%^&*()_+-]+)\"?\\s*" + _output.__assigner + "\\s*(.+)\\s*";
+			_key_values_regex = "^\\s*\"?([A-Za-z0-9!@#$%^&*()_+-]+)\"?\\s*" + _output.__assigner + "\\s*(.+)\\s*,?\\s*";
 		}
 
 		else if (_is_opening_tag_parse && !_is_closing_tag_parse && std::regex_match(_line, _matches, _key_values_regex)) {
 			_key = _matches[1].str();
-			_value = strip_all(_matches[2].str());
+			_value = trim_both(trim_right(trim_right(_matches[2].str()), ","));
 			_output.list.insert(std::make_pair(_key, _value ) );
 		}
 
@@ -126,8 +126,14 @@ int post_fm_write(std::string __file_path, frontmatter __frontmatter, std::strin
 	__output_file << __frontmatter.__open_divider << std::endl;
 
 	std::string _comma = ",";
-	for (std::map<std::string, std::string>::iterator _trav = __frontmatter.list.begin(); _trav != __frontmatter.list.end(); _trav++)
-		__output_file << __frontmatter.__tab << string_format(__frontmatter.type, _trav->first, "key") << __frontmatter.__space << __frontmatter.__assigner << " " << string_format(__frontmatter.type, _trav->second, "value") << NEWLINE;
+	for (std::map<std::string, std::string>::iterator _trav = __frontmatter.list.begin(); _trav != __frontmatter.list.end(); _trav++) {
+		__output_file << __frontmatter.__tab << string_format(__frontmatter.type, _trav->first, "key") << __frontmatter.__space << __frontmatter.__assigner << " " << string_format(__frontmatter.type, _trav->second, "value");
+
+		if ((__frontmatter_type == "JSON" || __frontmatter_type == "json") && std::next(_trav) != __frontmatter.list.end())
+			__output_file << ", " << NEWLINE;
+		else
+			__output_file << NEWLINE;
+	}
 
 	__output_file << __frontmatter.__close_divider << std::endl;
 

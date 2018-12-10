@@ -38,3 +38,14 @@ std::string prompt_arr(std::string __question, int __count) {
 
 	return _arr;
 }
+
+void confirm_prompt(std::string __question = "Are you sure you want to confirm the action? (enter anything other than 'N' or 'n' to confirm)") {
+	std::cout.flush();
+
+	std::string _answer;
+	std::cout << __question << std::endl << ">>> ";
+	std::cin >> _answer;
+
+	if (_answer == "N" || _answer == "n")
+		exit(0);
+}
