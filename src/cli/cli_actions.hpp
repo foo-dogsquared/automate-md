@@ -109,8 +109,10 @@ void update(std::string __file_path, std::map<std::string, std::string> __option
 	if (__options.empty())
 		exit_error_code(20, "Command \"update\" needs at least one optional parameter.");
 
-	if (__options.find(FORCE_PROMPT) != __options.end() || __options.find(FORCE_PROMPT)->second != "true")
+	if (__options.find(FORCE_PROMPT) == __options.end() || __options.find(FORCE_PROMPT)->second != "true")
 		confirm_prompt();
+	else
+		__options.erase(FORCE_PROMPT);
 	
 	frontmatter _fm = extract_frontmatter(__file_path);
 	std::string _content = extract_content(__file_path);
