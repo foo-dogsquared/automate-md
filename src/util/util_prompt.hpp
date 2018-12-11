@@ -29,7 +29,7 @@ std::string prompt_arr(std::string __question, int __count) {
 	}
 
 	for (int index = 0; index < __count; index++) {
-		std::string _word = prompt( __question + " #" + std::to_string(index + 1));
+		std::string _word = enclose_str(prompt( __question + " #" + std::to_string(index + 1)));
 		_arr += _word + ((index == __count - 1) ? "" : ", ");
 	}
 	

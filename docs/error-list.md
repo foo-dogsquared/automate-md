@@ -1,18 +1,3 @@
-# The core of the program
-
-Here's the basic representation of the program from multiple files:
-
-`interface.cpp`
-    └─── cli/`cli_actions.hpp`
-        ├─── `create()`
-        ├─── `update()`
-        ├─── `reset()`
-        └─── `extract()`
-
-All of the functions from `cli/cli_actions.hpp` are derived further from `file_io/file_io.hpp`.
-
-But the main files to be inspected for the core functions to work is from `/cli/cli_actions.hpp` and `/functions/file_io.hpp`.
-
 ## Error list:
 ### General
 - 1 - this only occurs when opening the program with only an action and has no parameter

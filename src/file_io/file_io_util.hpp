@@ -43,7 +43,7 @@ std::string string_format(std::string __fm_type, std::string __str, std::string 
 			return enclose_str(__str);
 	}
 	else if (__type == "value") {
-		if (__fm_type == "YAML" || __fm_type == "yaml")
+		if (str_is_array(__str) || __fm_type == "YAML" || __fm_type == "yaml")
 			return __str;
 		else
 			return enclose_str(__str);
