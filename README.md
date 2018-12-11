@@ -2,7 +2,7 @@
 [![HitCount](http://hits.dwyl.io/foo-dogsquared/automate-md.svg)](http://hits.dwyl.io/foo-dogsquared/automate-md)
 ![Size](https://github-size-badge.herokuapp.com/foo-dogsquared/automate-md.svg)
 
-A program that just automates creation of .md files that is suitable for Jekyll (and Hugo) with the correct frontmatter, probably.
+A blogging tool for those who use Jekyll and Hugo (probably)...
 
 ## How to use
 Clone the Git repo with:
@@ -50,13 +50,12 @@ automate-md extract ./my_notebook.md --%part=content
 ##### Format and available parameters:
 
 ```bash
-create "TITLE" --%fm_type=[JSON || YAML || TOML]  --%output_path=PATH_OF_OUTPUT🤣 --%ssg_template=[jekyll || hugo] --any_options=any_value_you_want
+create "TITLE" --%fm_type=[JSON || YAML || TOML]  --%output_path=PATH_OF_OUTPUT🤣 --any_options=any_value_you_want
 ```
 
 ##### Command parameters:
 - `fm_type` - the frontmatter format to be based on; the default format is in YAML, the frontmatter format of Jekyll posts
 - `output_path` - well, self-explanatory --- this is where the markdown file will be written; take note that the output path for the markdown file must already exists, just like how the system command `touch` won't create a file when the specified directories cannot be found
-- `ssg_template` - the usual template of key-value objects where certain static site generators always have them; default template to be used is Jekyll
 
 How about the `any-options` one? I'll explain it shortly after the next sentence.
 
@@ -122,12 +121,13 @@ With each of the markdown has difference like with the first file having JSON fo
 ##### Format and available parameters:
 
 ```bash
-update FILE_PATH --%delete_key=[key1,key2,key3,...] --%fm_type=[JSON || YAML || TOML] --%update_date=RELATIVE_DAYS --%force --any_option=any_value
+update FILE_PATH --%delete_key=[key1,key2,key3,...] --%fm_type=[JSON || YAML || TOML] --%update_date=RELATIVE_DAYS --%force=[true || false] --any_option=any_value
 ```
 
 ##### Command parameters:
 - `delete_key` - a list of keys separated by a comma **with no whitespace character** to be deleted on the frontmatter
 - `fm_type` - the format of the frontmatter to be updated with
+- `force` - skip the prompt when the value is `true`
 - `update_date` - it will update the date value with the relative number of days (also it will overwrite it in a complete ISO date string format [`%F %T %z`](https://www.tutorialspoint.com/c_standard_library/c_function_strftime.htm))
 
 Just like from the `create()` function, you can set any option with any value to be included in the frontmatter. And get this, there's only one prompt which is there for safety reasons, for course. Well, you can skip the prompt by typing `--%force` although it requires more key presses than pressing the enter button, typing `Y`, `y`, `N`, or `n`, and pressing Enter again. Could be useful for automated updating, who knows...
