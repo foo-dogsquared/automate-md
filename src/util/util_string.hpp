@@ -91,7 +91,7 @@ std::vector<std::string> arr_extract(std::string __arr_str) {
 		return _arr;
 	}
 
-	std::regex _vector_elem("\"?\\.+?\"?,");
+	std::regex _vector_elem("\"?\\w+\"?");
 	
 	for (std::sregex_iterator _match = std::sregex_iterator(__arr_str.begin(), __arr_str.end(), _vector_elem); _match != std::sregex_iterator(); ++_match) {
 		std::smatch _word = *_match;

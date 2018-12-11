@@ -22,7 +22,7 @@ int main(int argc, char* argv[]) {
         std::string action = argv[1];
         std::string required_param = argv[2];
 
-        std::regex option_regex("--(%?\\w+)=\"?(.+?)\"?");
+        std::regex option_regex("--(%?[A-Za-z0-9_-]+)=\"?(.+?)\"?");
         std::map<std::string, std::string> optional_params;
         std::smatch matches;
         std::string op_param, value;

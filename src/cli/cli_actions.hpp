@@ -8,12 +8,13 @@
 
 // optional action specifiers (command-specific)
 #define FM_TYPE "%fm_type"
+#define FORCE_PROMPT "%force"
 
 // for create()
 #define OUTPUT_PATH "%output_path"
 
 // for update()
-#define DELETE_KEYS "%delete_key"
+#define DELETE_KEYS "%delete_keys"
 #define UPDATE_DATE "%update_date"
 
 // for extract()
@@ -40,6 +41,10 @@ void create(std::string __title, std::map<std::string, std::string> __optional_p
 			else if (_key == OUTPUT_PATH) {
 				_output_path = _value;
 				_trav++;
+				continue;
+			}
+			else if (_key.front() == '%') {
+				std::cout << _key + " is not an optional command parameter." << std::endl;
 				continue;
 			}
 
@@ -104,7 +109,8 @@ void update(std::string __file_path, std::map<std::string, std::string> __option
 	if (__options.empty())
 		exit_error_code(20, "Command \"update\" needs at least one optional parameter.");
 
-	confirm_prompt();
+	if (__options.find(FORCE_PROMPT) != __options.end() || __options.find(FORCE_PROMPT)->second != "true")
+		confirm_prompt();
 	
 	frontmatter _fm = extract_frontmatter(__file_path);
 	std::string _content = extract_content(__file_path);
@@ -114,10 +120,15 @@ void update(std::string __file_path, std::map<std::string, std::string> __option
 		// since optional command specifiers are also in there, we have to search for it
 		if (_key == DELETE_KEYS) {
 			std::vector<std::string> _delete_list = arr_extract(_value);
-			
+			std::cout << std::endl;
+
 			for (int index = 0; index < _delete_list.size(); index++) {
-				_fm.list.erase(_delete_list[index]);
+				if (_fm.list.find(_delete_list[index]) == _fm.list.end())
+					std::cout << "Cannot detect key \"" + _delete_list[index] + "\" in the frontmatter." << std::endl;
+				else
+					_fm.list.erase(_delete_list[index]);
 			}
+			std::cout << std::endl;
 			continue;
 		}
 		else if (_key == UPDATE_DATE) {
@@ -133,6 +144,10 @@ void update(std::string __file_path, std::map<std::string, std::string> __option
 		}
 		else if (_key == FM_TYPE) {
 			_fm.type = _value;
+			continue;
+		}
+		else if (_key.front() == '%') {
+			std::cout << _key + " is not an optional command parameter." << std::endl;
 			continue;
 		}
 
