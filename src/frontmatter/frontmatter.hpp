@@ -20,7 +20,7 @@ typedef struct _frontmatter
 } 
 frontmatter;
 
-void init_fm_format_data(frontmatter &__fm) {
+static void init_fm_format_data(frontmatter &__fm) {
 	if (__fm.type == "YAML" || __fm.type == "yaml") {
 		__fm.__open_divider = "---";
 		__fm.__close_divider = "---";
@@ -44,7 +44,7 @@ void init_fm_format_data(frontmatter &__fm) {
 	}
 }
 
-std::string detect_type(std::string __str) {
+static std::string detect_type(std::string __str) {
 	std::regex __YAML("---\\s*"), __TOML("\\+\\+\\+\\s*"), __JSON("\\{\\s*|\\}\\s*");
 	if (std::regex_match(__str, __YAML))
 		return "YAML";

@@ -33,7 +33,7 @@ void create(std::string __title, std::map<std::string, std::string> __optional_p
 			_key = _trav->first;
 			_value = _trav->second;
 
-			if (_key == FM_TYPE && !is_not_valid_fm_format(_value)) {
+			if (_key == FM_TYPE && !util::is_not_valid_fm_format(_value)) {
 				__file.type = _value;
 				_trav++;
 				continue;
@@ -74,32 +74,32 @@ void create(std::string __title, std::map<std::string, std::string> __optional_p
 
 	// prompting for layout when no given option
 	if (__file.list.find("layout") == __file.list.end())
-		__file.list.insert(std::make_pair("layout", prompt("What is the post layout in the frontmatter?")));
+		__file.list.insert(std::make_pair("layout", util::prompt("What is the post layout in the frontmatter?")));
 
 	// prompting for author when no given option
 	if (__file.list.find("author") == __file.list.end())
-		__file.list.insert(std::make_pair("author", prompt("Who is the author in the post?") ) );
+		__file.list.insert(std::make_pair("author", util::prompt("Who is the author in the post?") ) );
 
-	std::string full_iso_date_string = get_current_formatted_date_string(publish_date);
+	std::string full_iso_date_string = util::get_current_formatted_date_string(publish_date);
 	__file.list.at("date") = full_iso_date_string;
 
-	std::string iso_date_string = get_current_formatted_date_string(publish_date, "%F");
-	_output_path = check_dir_path(_output_path);
+	std::string iso_date_string = util::get_current_formatted_date_string(publish_date, "%F");
+	_output_path = util::check_dir_path(_output_path);
 	// Filling up the frontmatter with the necessary data
 	
-	__file.categories_length = prompt_int("How many categories for this post?", 1, MAX_ARR_LENGTH);
-	__file.list.insert(std::make_pair("categories", prompt_arr("Categories", __file.categories_length) ));
+	__file.categories_length = util::prompt_int("How many categories for this post?", 1, MAX_ARR_LENGTH);
+	__file.list.insert(std::make_pair("categories", util::prompt_arr("Categories", __file.categories_length) ));
 
 	__file.list.insert(std::make_pair("date", full_iso_date_string));
 
-	__file.tags_length = prompt_int("How many tags for this post?", 1, MAX_ARR_LENGTH);
-	__file.list.insert(std::make_pair("tags", prompt_arr("Tags", __file.tags_length)));
+	__file.tags_length = util::prompt_int("How many tags for this post?", 1, MAX_ARR_LENGTH);
+	__file.list.insert(std::make_pair("tags", util::prompt_arr("Tags", __file.tags_length)));
 
 	__file.list.insert(std::make_pair("title", __title));
 	
-    std::string __file_name = _output_path + iso_date_string + "-" + slugize_str(__title) + ".md";
+    std::string __file_name = _output_path + iso_date_string + "-" + util::slugize_str(__title) + ".md";
 
-	int _exit_code = post_fm_write(__file_name, __file, __file.type);
+	int _exit_code = file_io::post_fm_write(__file_name, __file, __file.type);
 	if (_exit_code == 0)
 		std::cout << "\n" + __file_name + " successfully created." << std::endl;
 	exit(_exit_code);
@@ -110,18 +110,18 @@ void update(std::string __file_path, std::map<std::string, std::string> __option
 		exit_error_code(20, "Command \"update\" needs at least one optional parameter.");
 
 	if (__options.find(FORCE_PROMPT) == __options.end() || __options.find(FORCE_PROMPT)->second != "true")
-		confirm_prompt();
+		util::confirm_prompt();
 	else
 		__options.erase(FORCE_PROMPT);
 	
-	frontmatter _fm = extract_frontmatter(__file_path);
-	std::string _content = extract_content(__file_path);
+	frontmatter _fm = file_io::extract_frontmatter(__file_path);
+	std::string _content = file_io::extract_content(__file_path);
 
 	for (std::map<std::string, std::string>::iterator _trav = __options.begin(); _trav != __options.end(); _trav++) {
 		std::string _key = _trav->first, _value = _trav->second;
 		// since optional command specifiers are also in there, we have to search for it
 		if (_key == DELETE_KEYS) {
-			std::vector<std::string> _delete_list = arr_extract(_value);
+			std::vector<std::string> _delete_list = util::arr_extract(_value);
 			std::cout << std::endl;
 
 			for (int index = 0; index < _delete_list.size(); index++) {
@@ -134,13 +134,13 @@ void update(std::string __file_path, std::map<std::string, std::string> __option
 			continue;
 		}
 		else if (_key == UPDATE_DATE) {
-			if (has_non_digits(_value))
+			if (util::has_non_digits(_value))
 				std::cout << "%update_date optional command parameter has a non-digit character" << std::endl;
 			
 			if (_fm.list.find("date") == _fm.list.end())
-				_fm.list.insert(std::make_pair("date", get_current_formatted_date_string(stoi(_value)) ));
+				_fm.list.insert(std::make_pair("date", util::get_current_formatted_date_string(stoi(_value)) ));
 			else
-				_fm.list["date"] = get_current_formatted_date_string(stoi(_value));
+				_fm.list["date"] = util::get_current_formatted_date_string(stoi(_value));
 
 			continue;
 		}
@@ -161,7 +161,7 @@ void update(std::string __file_path, std::map<std::string, std::string> __option
 			_fm.list[_key] = _value;
 	}
 
-	int _exit_code = post_update(__file_path, _fm, _fm.type, _content);
+	int _exit_code = file_io::post_update(__file_path, _fm, _fm.type, _content);
 	if (_exit_code == 0)
 		std::cout << "\n" << __file_path << " was successfully updated.";
 	exit(_exit_code);
@@ -171,11 +171,11 @@ void reset(std::string __file_path) {
 	if (__file_path.empty())
 		exit_error_code(30, "Command \"reset\" needs the file path.");
 
-	confirm_prompt();
+	util::confirm_prompt();
 
-	frontmatter _fm = extract_frontmatter(__file_path);
+	frontmatter _fm = file_io::extract_frontmatter(__file_path);
 
-	int _exit_code = post_fm_write(__file_path, _fm);
+	int _exit_code = file_io::post_fm_write(__file_path, _fm);
 	std::cout << "File has been reset." << std::endl;
 	exit(_exit_code);
 }
@@ -196,13 +196,13 @@ void extract(std::string __file_path, std::map<std::string, std::string> __optio
 		_output_path = __file_path;
 
 	if (_part == "frontmatter" || _part == "FRONTMATTER") {
-		frontmatter _fm = extract_frontmatter(__file_path);
-		_exit_code = post_fm_write(__file_path, _fm, _fm.type);
+		frontmatter _fm = file_io::extract_frontmatter(__file_path);
+		_exit_code = file_io::post_fm_write(__file_path, _fm, _fm.type);
 	} else if (_part == "content" || _part == "CONTENT") {
-		std::string _content = extract_content(__file_path);
+		std::string _content = file_io::extract_content(__file_path);
 		if (_content.empty()) 
 			exit_error_code(41, "Content from file is empty");
-		_exit_code = post_content_write(__file_path, _content);
+		_exit_code = file_io::post_content_write(__file_path, _content);
 	}
 	
 	exit(_exit_code);
