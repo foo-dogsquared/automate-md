@@ -16,7 +16,8 @@ int main(int argc, char* argv[]) {
         return 0;
     }
     else if (argc == 2) {
-        if (argv[1] == "--help" || argv[1] == "-h")
+        std::string action = argv[1];
+        if (action == "--help" || action == "-h")
             cli_help_section();    
         else
             cli_action_detect(argv[1]);

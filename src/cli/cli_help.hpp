@@ -10,16 +10,15 @@ std::string cli_actions_format(std::string action, std::string params, std::stri
 }
 
 void cli_help_section() {
-    std::cout << "automate-md Usage:" << std::endl;
-    std::cout << "\tautomate-md [ACTION] [PARAMETER(S)]" << std::endl;
-    std::cout << cli_actions_format("create", "TITLE") << std::endl;
+    std::cout << "Usage: automate-md [action] [required_param] [optional_param]...\n" <<
+            "Actions:\n" << std::endl;
 }
 
 void cli_action_detect(std::string action) {
     if (action == "create" || action == "CREATE") 
-        std::cout << "\tUsage: " << cli_actions_format("create", "TITLE", "[PUBLISH_DATE] [FILE_NAME]") << std::endl;
+        std::cout << "\tUsage: " << cli_actions_format("create", "TITLE") << std::endl;
     else if (action == "update" || action == "UPDATE")
-        std::cout << "\tUsage: " << cli_actions_format("update", "FILE_NAME", "[UPDATED_TITLE]") << std::endl;
+        std::cout << "\tUsage: " << cli_actions_format("update", "FILE_NAME") << std::endl;
     else if (action == "reset" || action == "RESET")
         std::cout << "\tUsage: " << cli_actions_format("reset", "FILE_NAME") << std::endl;
     else if (action == "extract" || action == "EXTRACT")
