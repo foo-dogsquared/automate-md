@@ -7,6 +7,10 @@ Some of the planned changes are also listed in here.
 ## [Unreleased]
 - Nothing yet.
 
+## [1.0.1] - 2018-12-17
+### Changed
+- Revised the help section of the program
+
 ## [1.0.0] - 2018-12-11
 ### Added
 - Added the `%force` optional command parameter on the `update` function.
