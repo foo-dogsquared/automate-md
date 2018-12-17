@@ -5,18 +5,17 @@
 
 #include "cli/cli_actions.hpp"
 
-#define CREATE "create"
-#define UPDATE "update"
-#define RESET "reset"
-#define EXTRACT "extract"
-
 int main(int argc, char* argv[]) {
     if (argc == 1) {
         cli_help_section();
         return 0;
     }
-    else if (argc == 2) {   
-        cli_action_detect(argv[1]);
+    else if (argc == 2) {
+        std::string action = argv[1];
+        if (action == "--help" || action == "-h")
+            cli_help_section();    
+        else
+            cli_action_detect(argv[1]);
     }
     else if (argc >= 3) {
         std::string action = argv[1];

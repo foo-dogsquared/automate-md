@@ -1,0 +1,8 @@
+language: cpp
+compiler: gcc
+
+scripts:
+  - cmake CMakeLists.txt
+  - make
+  - automate-md
+  - automate-md create
