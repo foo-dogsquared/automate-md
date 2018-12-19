@@ -7,7 +7,7 @@
 
 int main(int argc, char* argv[]) {
     if (argc == 1) {
-        cli_help_section();
+        cli_intro_section();
         return 0;
     }
     else if (argc == 2) {
