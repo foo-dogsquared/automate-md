@@ -5,7 +5,15 @@ Some of the planned changes are also listed in here.
 - Add `reset` command.
 
 ## [Unreleased]
-- Nothing yet.
+- Unit tests (still a beginner when it comes to properly testing out codes)
+
+## [1.0.2] - 2018-12-23
+### Changed
+- Updated the regex
+- Revised the way how variables are placed
+
+### What's fixed?
+- Fixed the wrong and buggy outputting process of `extract`
 
 ## [1.0.1] - 2018-12-17
 ### Changed
