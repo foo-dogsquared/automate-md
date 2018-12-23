@@ -52,5 +52,21 @@ namespace file_io {
 
 		return __str;
 	}
+	
+    /**
+     * Returns a string of the file's extension
+     *
+     * @param file_path - path of file to be read
+     * 
+     **/
+    std::string extract_file_extension(std::string __file_path) {
+        std::vector<std::string> _words = util::split(__file_path, "\\.");
+        std::string _file_ext = _words[_words.size() - 1];
+
+        if (_file_ext.empty())
+            throw "Cannot find file extension";
+        
+        return _file_ext;
+    }
 }
 
