@@ -197,12 +197,15 @@ void extract(std::string __file_path, std::map<std::string, std::string> __optio
 
 	if (_part == "frontmatter" || _part == "FRONTMATTER") {
 		frontmatter _fm = file_io::extract_frontmatter(__file_path);
-		_exit_code = file_io::post_fm_write(__file_path, _fm, _fm.type);
+		_exit_code = file_io::post_fm_write(_output_path, _fm, _fm.type);
+		std::cout << "Frontmatter has been extracted to " << _output_path << std::endl;		
 	} else if (_part == "content" || _part == "CONTENT") {
 		std::string _content = file_io::extract_content(__file_path);
 		if (_content.empty()) 
 			exit_error_code(41, "Content from file is empty");
-		_exit_code = file_io::post_content_write(__file_path, _content);
+		
+		std::cout << "Content has been extracted to " << _output_path << std::endl;
+		_exit_code = file_io::post_content_write(_output_path, _content);
 	}
 	
 	exit(_exit_code);

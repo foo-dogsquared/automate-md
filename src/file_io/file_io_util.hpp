@@ -22,15 +22,15 @@ namespace file_io {
 	}
 
 	bool is_frontmatter_tag(std::string __line) {
-		std::regex __frontmatter_tags("^\\+\\+\\+\\s*$|^---\\s*$|^\\{\\s*$|^\\}\\s*$");
+		std::regex __frontmatter_tags("^\\s*(?:---|\\+\\+\\+|\\{|\\})\\s*$");
 		if (std::regex_match(__line, __frontmatter_tags))
 			return true;
 		else
 			return false;
 	}
 
-	bool is_markdown(std::string __file_path) {
-		std::regex _file_ext_md(".+\\.md|\\.markdown$");
+	bool is_valid_file(std::string __file_path) {
+		std::regex _file_ext_md(".+\\.(md|markdown|mdown|mkdn|mkd|html|htm)$");
 
 		if (std::regex_match(__file_path, _file_ext_md))
 			return true;
@@ -52,5 +52,21 @@ namespace file_io {
 
 		return __str;
 	}
+	
+    /**
+     * Returns a string of the file's extension
+     *
+     * @param file_path - path of file to be read
+     * 
+     **/
+    std::string extract_file_extension(std::string __file_path) {
+        std::vector<std::string> _words = util::split(__file_path, "\\.");
+        std::string _file_ext = _words[_words.size() - 1];
+
+        if (_file_ext.empty())
+            throw "Cannot find file extension";
+        
+        return _file_ext;
+    }
 }
 

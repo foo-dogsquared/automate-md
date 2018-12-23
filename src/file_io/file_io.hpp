@@ -29,7 +29,7 @@ namespace file_io {
 		
 		init_fm_format_data(__frontmatter);  // defensive mechanism in case the struct frontmatter has no initialized data to get
 
-		if (!is_markdown(__file_path))
+		if (!is_valid_file(__file_path))
 			__file_path += ".md";
 
 		if (__operation == "write")
@@ -67,7 +67,7 @@ namespace file_io {
 	*
 	**/
 	int post_content_write(std::string __output_path, std::string __content, std::string __operation = "write") {
-		if (!is_markdown(__output_path))
+		if (!is_valid_file(__output_path))
 			__output_path += ".md";
 		
 		std::ofstream _output;
@@ -81,6 +81,7 @@ namespace file_io {
 			_output.open(__output_path, std::ios::out | std::ios::trunc);
 
 		_output << __content;
+		_output.close();
 		return 0;
 	}
 
