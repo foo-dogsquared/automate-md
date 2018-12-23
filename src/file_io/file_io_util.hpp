@@ -29,8 +29,8 @@ namespace file_io {
 			return false;
 	}
 
-	bool is_markdown(std::string __file_path) {
-		std::regex _file_ext_md(".+\\.md|\\.markdown$");
+	bool is_valid_file(std::string __file_path) {
+		std::regex _file_ext_md(".+\\.(md|markdown|mdown|mkdn|mkd|html|htm)$");
 
 		if (std::regex_match(__file_path, _file_ext_md))
 			return true;
