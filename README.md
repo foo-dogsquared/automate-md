@@ -1,5 +1,7 @@
 # automate-md
 [![HitCount](http://hits.dwyl.io/foo-dogsquared/automate-md.svg)](http://hits.dwyl.io/foo-dogsquared/automate-md)
+[![License](https://img.shields.io/badge/license-MIT-brightgreen.svg)](./LICENSE)
+![Version](https://img.shields.io/badge/version-1.0-brightgreen.svg)
 ![Size](https://github-size-badge.herokuapp.com/foo-dogsquared/automate-md.svg)
 
 A blogging tool for those who use Jekyll and Hugo (probably)...
