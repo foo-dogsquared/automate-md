@@ -22,7 +22,7 @@ namespace file_io {
 	}
 
 	bool is_frontmatter_tag(std::string __line) {
-		std::regex __frontmatter_tags("^\\+\\+\\+\\s*$|^---\\s*$|^\\{\\s*$|^\\}\\s*$");
+		std::regex __frontmatter_tags("^\\s*(?:---|\\+\\+\\+|\\{|\\})\\s*$");
 		if (std::regex_match(__line, __frontmatter_tags))
 			return true;
 		else
