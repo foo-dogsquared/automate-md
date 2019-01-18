@@ -45,6 +45,7 @@ void create(std::string __title, std::map<std::string, std::string> __optional_p
 			}
 			else if (_key.front() == '%') {
 				std::cout << _key + " is not an optional command parameter." << std::endl;
+				_trav++;
 				continue;
 			}
 

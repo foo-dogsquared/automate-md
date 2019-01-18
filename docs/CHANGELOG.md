@@ -7,6 +7,13 @@ Some of the planned changes are also listed in here.
 ## [Unreleased]
 - Unit tests (still a beginner when it comes to properly testing out codes)
 
+## [1.0.3] - 2019-01-18
+### Changed
+- Changed the documentation
+
+### What's fixed?
+- Fixed the infinite optional command error message bug when running the command with `create`
+
 ## [1.0.2] - 2018-12-23
 ### Changed
 - Updated the regex
